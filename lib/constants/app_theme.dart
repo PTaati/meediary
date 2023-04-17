@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData applicationTheme() {
-    // TODO(taati): implement app theme
-    return ThemeData();
+    return ThemeData(
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: Colors.black
+    );
   }
 }
