@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meediary/pages/main_page.dart';
+import 'package:meediary/meediary_app.dart';
 import 'package:meediary/services/object_box.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ Future<void> main() async {
       providers: [
         Provider<ObjectBox>(create: (_) => objectbox),
       ],
-      child: const MainPage(),
+      child: const MeediaryApp(),
     ),
   );
 }

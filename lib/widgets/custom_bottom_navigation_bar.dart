@@ -8,7 +8,7 @@ class CustomBottomNavigationBar extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  final Function(BottomNavigationTab) onTap;
+  final Future<void> Function(BottomNavigationTab) onTap;
 
   @override
   State<CustomBottomNavigationBar> createState() =>
@@ -70,11 +70,16 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             ),
           ],
           currentIndex: _currentTab,
-          onTap: (index) {
+          onTap: (index) async {
             setState(() {
               _currentTab = index;
-              widget.onTap(BottomNavigationTab.values[_currentTab]);
             });
+            await widget.onTap(BottomNavigationTab.values[_currentTab]);
+            if (mounted && _currentTab == BottomNavigationTab.newPost.index){
+              setState(() {
+                _currentTab = BottomNavigationTab.home.index;
+              });
+            }
           },
         ),
       ),
