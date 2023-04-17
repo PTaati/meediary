@@ -21,3 +21,7 @@ doc/api/
 *.js.map
 .idea
 .fvm
+/.flutter-plugins
+/.flutter-plugins-dependencies
+/lib/objectbox.g.dart
+/lib/objectbox-model.json

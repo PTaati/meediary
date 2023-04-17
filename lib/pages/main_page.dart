@@ -11,24 +11,21 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Meedairy',
-      theme: AppTheme.applicationTheme(),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Meediary'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const <Widget>[
-              Text(
-                'Your diary for the age of social media.',
-              ),
-            ],
+    return  MaterialApp(
+        title: 'Meedairy',
+        theme: AppTheme.applicationTheme(),
+        home: Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                Text(
+                  'Your diary for the age of social media.',
+                ),
+              ],
+            ),
           ),
         ),
-      ),
     );
   }
 }
