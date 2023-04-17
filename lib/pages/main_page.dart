@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meediary/constants/app_theme.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -12,9 +13,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Meedairy',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.applicationTheme(),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Meediary'),
