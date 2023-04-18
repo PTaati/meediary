@@ -3,6 +3,7 @@ import 'package:meediary/constants/enums.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/constants/routes.dart';
 import 'package:meediary/pages/feed_page.dart';
+import 'package:meediary/pages/profile_page.dart';
 import 'package:meediary/widgets/custom_bottom_navigation_bar.dart';
 
 class MainPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class _MainPageState extends State<MainPage> {
       const FeedPage(),
       const SizedBox(),
       const Text('ไม่มีการแจ้งเตือน'),
-      const Text('กำลังพัฒนา...'),
+      const ProfilePage(),
     ];
   }
 
