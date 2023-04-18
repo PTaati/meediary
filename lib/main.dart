@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meediary/data_models/post.dart';
 import 'package:meediary/meediary_app.dart';
 import 'package:meediary/services/object_box.dart';
 import 'package:meediary/services/post_services.dart';
@@ -12,7 +13,8 @@ Future<void> main() async {
   late PostService postService;
 
   objectbox = await ObjectBox.create();
-  postService = PostService();
+  final postBox = objectbox.store.box<Post>();
+  postService = PostService(postBox, postBox.getAll().reversed.toList());
 
   runApp(
     MultiProvider(

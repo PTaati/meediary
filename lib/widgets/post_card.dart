@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:meediary/data_models/post.dart';
+import 'package:provider/provider.dart';
+
+import '../services/post_services.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
@@ -15,21 +18,29 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  bool _isLike = false;
+  late PostService postService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    postService = Provider.of<PostService>(context, listen: false);
+  }
 
   Widget _buildLike() {
     return GestureDetector(
       excludeFromSemantics: true,
       onTap: () {
         setState(() {
-          _isLike = !_isLike;
+          widget.post.isLike = !widget.post.isLike;
+          postService.postBox.put(widget.post);
         });
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
-            _isLike ? Icons.favorite : Icons.favorite_outline,
+            widget.post.isLike ? Icons.favorite : Icons.favorite_outline,
             color: Colors.white,
           ),
           const SizedBox(
