@@ -133,6 +133,10 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
             onPressed: () {
               setState(() {
                 xFile = null;
+
+                if (_textEditingController.text.isEmpty){
+                  _canSave = false;
+                }
               });
             },
           ),
@@ -140,6 +144,8 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
       ],
     );
   }
+
+
 
   Widget _buildBodySection() {
     return Padding(
@@ -160,9 +166,13 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                 hintText: 'วันนี้เธอพบเจออะไรมาหรอ ?',
               ),
               onChanged: (value) {
-                if (value.isNotEmpty) {
+                if (value.isNotEmpty || xFile != null) {
                   setState(() {
                     _canSave = true;
+                  });
+                } else {
+                  setState(() {
+                    _canSave = false;
                   });
                 }
               },
@@ -181,6 +191,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
               }
               setState(() {
                 xFile = image;
+                _canSave = true;
               });
             }),
             _buildRowAction(
@@ -196,6 +207,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
               }
               setState(() {
                 xFile = image;
+                _canSave = true;
               });
             }),
           ],
