@@ -16,6 +16,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   BottomNavigationTab _currentTab = BottomNavigationTab.home;
   late List<Widget> tabs;
+  final _pageViewController = PageController();
 
   @override
   void initState() {
@@ -27,6 +28,13 @@ class _MainPageState extends State<MainPage> {
       const ProfilePage(),
     ];
   }
+
+  @override
+  void dispose() {
+    _pageViewController.dispose();
+    super.dispose();
+  }
+
 
   void _onTapNewPost(BuildContext context) async {
     await Navigator.of(context).pushNamed(RouteNames.addNewPostPage);

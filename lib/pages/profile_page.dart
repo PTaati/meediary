@@ -28,6 +28,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 size: 100,
               ),
             ),
+            SizedBox(height: 30),
+            Text(
+              "Taati",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            )
           ],
         ),
       ),
