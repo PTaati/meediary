@@ -31,29 +31,30 @@ class _MainPageState extends State<MainPage> {
   void _onTapNewPost(BuildContext context) async {
     await Navigator.of(context).pushNamed(RouteNames.addNewPostPage);
 
-    if (mounted && _currentTab == BottomNavigationTab.newPost){
+    if (mounted && _currentTab == BottomNavigationTab.newPost) {
       setState(() {
         _currentTab = BottomNavigationTab.home;
       });
     }
   }
 
-  void _handleOnTabBottomNavigationBar(BottomNavigationTab tab, BuildContext context) {
+  void _handleOnTabBottomNavigationBar(
+      BottomNavigationTab tab, BuildContext context) {
     switch (tab) {
       case BottomNavigationTab.home:
-      // TODO(taati): implement on tab home
+        // TODO(taati): implement on tab home
         break;
       case BottomNavigationTab.search:
-      // TODO(taati): implement on tab search
+        // TODO(taati): implement on tab search
         break;
       case BottomNavigationTab.newPost:
         _onTapNewPost(context);
         break;
       case BottomNavigationTab.notification:
-      // TODO(taati): implement on tab notification
+        // TODO(taati): implement on tab notification
         break;
       case BottomNavigationTab.profile:
-      // TODO(taati): implement on tab profile
+        // TODO(taati): implement on tab profile
         break;
     }
   }
@@ -66,16 +67,14 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         onTap: (tab) async {
-          if (tab == BottomNavigationTab.home){
-            feedScrollController.animateTo(
-                0,
+          if (tab == BottomNavigationTab.home) {
+            feedScrollController.animateTo(0,
                 duration: const Duration(milliseconds: 500),
-                curve:Curves.fastOutSlowIn
-            );
+                curve: Curves.fastOutSlowIn);
           }
           _handleOnTabBottomNavigationBar(tab, context);
           setState(
-                () {
+            () {
               _currentTab = tab;
             },
           );
