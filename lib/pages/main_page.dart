@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meediary/constants/enums.dart';
 import 'package:meediary/constants/routes.dart';
+import 'package:meediary/pages/feed_page.dart';
 import 'package:meediary/widgets/custom_bottom_navigation_bar.dart';
 
 class MainPage extends StatefulWidget {
@@ -12,6 +13,19 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   BottomNavigationTab _currentTab = BottomNavigationTab.home;
+  late List<Widget> tabs;
+
+  @override
+  void initState() {
+    super.initState();
+    tabs = [
+      const FeedPage(),
+      Text(_currentTab.name),
+      Text(_currentTab.name),
+      Text(_currentTab.name),
+      Text(_currentTab.name),
+    ];
+  }
 
   void _onTapNewPost(BuildContext context) async {
     await Navigator.of(context).pushNamed(RouteNames.addNewPostPage);
@@ -47,12 +61,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(_currentTab.name),
-          ],
-        ),
+        child: tabs[_currentTab.index],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         onTap: (tab) async {

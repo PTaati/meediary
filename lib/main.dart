@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meediary/meediary_app.dart';
 import 'package:meediary/services/object_box.dart';
+import 'package:meediary/services/post_services.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -8,13 +9,16 @@ Future<void> main() async {
   // to store the database in.
   WidgetsFlutterBinding.ensureInitialized();
   late ObjectBox objectbox;
+  late PostService postService;
 
   objectbox = await ObjectBox.create();
+  postService = PostService();
 
   runApp(
     MultiProvider(
       providers: [
         Provider<ObjectBox>(create: (_) => objectbox),
+        Provider<PostService>(create: (_) => postService),
       ],
       child: const MeediaryApp(),
     ),
