@@ -6,6 +6,8 @@ class Post {
     required this.title,
     required this.description,
     required this.created,
+    this.comments = const [],
+    this.isLike = false,
   });
 
   @Id()
@@ -13,5 +15,7 @@ class Post {
 
   String title;
   String description;
+  List<String> comments;
+  bool isLike;
   DateTime created;
 }
