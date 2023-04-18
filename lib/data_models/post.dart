@@ -8,6 +8,7 @@ class Post {
     required this.created,
     this.comments = const [],
     this.isLike = false,
+    this.imagePath,
   });
 
   @Id()
@@ -17,5 +18,6 @@ class Post {
   String description;
   List<String> comments;
   bool isLike;
+  String? imagePath;
   DateTime created;
 }

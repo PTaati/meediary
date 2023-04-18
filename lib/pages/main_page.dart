@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meediary/constants/enums.dart';
+import 'package:meediary/constants/globals.dart';
 import 'package:meediary/constants/routes.dart';
 import 'package:meediary/pages/feed_page.dart';
 import 'package:meediary/widgets/custom_bottom_navigation_bar.dart';
@@ -65,6 +66,13 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         onTap: (tab) async {
+          if (tab == BottomNavigationTab.home){
+            feedScrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 500),
+                curve:Curves.fastOutSlowIn
+            );
+          }
           _handleOnTabBottomNavigationBar(tab, context);
           setState(
                 () {

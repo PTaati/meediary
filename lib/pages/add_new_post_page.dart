@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/services/post_services.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +16,8 @@ class AddNewPostPage extends StatefulWidget {
 class _AddNewPostPageState extends State<AddNewPostPage> {
   bool _canSave = false;
   final TextEditingController _textEditingController = TextEditingController();
+  final ImagePicker picker = ImagePicker();
+  String? imagePath;
 
   Widget _buildHeaderSection() {
     return Padding(
@@ -39,6 +44,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                       title: _textEditingController.text,
                       description: '',
                       created: DateTime.now(),
+                      imagePath: imagePath,
                     );
                     postService.post(post);
 
@@ -64,7 +70,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
     );
   }
 
-  Widget _buildRowAction(Icon icon, String label, Function() onTap) {
+  Widget _buildRowAction(Icon icon, String label, Future Function() onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -73,6 +79,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
             color: Colors.white54,
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               icon,
@@ -90,15 +97,38 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
     );
   }
 
+  Widget _buildImage() {
+    return Stack(
+      children: [
+        Image.file(
+          File(imagePath!),
+          fit: BoxFit.fitWidth,
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: IconButton(
+            icon: const Icon(Icons.cancel, color: Colors.white),
+            onPressed: () {
+              setState(() {
+                imagePath = null;
+              });
+            },
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _buildBodySection() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SingleChildScrollView(
         child: Column(
           children: [
             TextFormField(
               controller: _textEditingController,
-              maxLines: 16,
+              maxLines: 5,
               cursorColor: Colors.white54,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -116,21 +146,36 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                 }
               },
             ),
+            if (imagePath != null) _buildImage(),
             _buildRowAction(
                 const Icon(
                   Icons.image,
                   color: Colors.green,
                 ),
-                'รูปภาพ/วิดีโอ', () {
-              // TODO(taati): add image
+                'รูปภาพ/วิดีโอ', () async {
+              final XFile? image =
+                  await picker.pickImage(source: ImageSource.gallery);
+              if (!mounted || image == null) {
+                return;
+              }
+              setState(() {
+                imagePath = image.path;
+              });
             }),
             _buildRowAction(
                 const Icon(
-                  Icons.edit_location_sharp,
-                  color: Colors.red,
+                  Icons.camera_alt,
+                  color: Colors.redAccent,
                 ),
-                'เช็คอิน', () {
-              // TODO(taati): check in
+                'ถ่ายรูป', () async {
+              final XFile? image =
+                  await picker.pickImage(source: ImageSource.camera);
+              if (!mounted || image == null) {
+                return;
+              }
+              setState(() {
+                imagePath = image.path;
+              });
             }),
           ],
         ),
@@ -145,7 +190,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
         const Divider(
           color: Colors.white54,
         ),
-        _buildBodySection(),
+        Expanded(child: _buildBodySection()),
       ],
     );
   }

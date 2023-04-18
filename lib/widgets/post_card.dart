@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:meediary/data_models/post.dart';
@@ -118,6 +120,16 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
+  Widget _buildImage() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Image.file(
+        File(widget.post.imagePath!),
+        fit: BoxFit.fitWidth,
+      ),
+    );
+  }
+
   Widget _buildPostBody() {
     return Column(
       children: [
@@ -127,9 +139,7 @@ class _PostCardState extends State<PostCard> {
             color: Colors.white,
           ),
         ),
-        const SizedBox(
-          height: 30,
-        ),
+        if (widget.post.imagePath != null) _buildImage(),
       ],
     );
   }
