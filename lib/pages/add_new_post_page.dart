@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/services/post_services.dart';
+import 'package:meediary/utils/file_utils.dart';
 import 'package:provider/provider.dart';
 
 class AddNewPostPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
   bool _canSave = false;
   final TextEditingController _textEditingController = TextEditingController();
   final ImagePicker picker = ImagePicker();
-  String? imagePath;
+  XFile? xFile;
 
   Widget _buildHeaderSection() {
     return Padding(
@@ -38,15 +39,23 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
           ),
           IconButton(
             onPressed: _canSave
-                ? () {
+                ? () async {
                     final postService =
                         Provider.of<PostService>(context, listen: false);
+
+                    String? imagePath;
+
+                    if (xFile != null) {
+                      imagePath = await saveFileInApp(xFile!);
+                    }
+
                     final post = Post(
                       title: _textEditingController.text,
                       description: '',
                       created: DateTime.now(),
                       imagePath: imagePath,
                     );
+
                     postService.post(post);
 
                     const snackBar = SnackBar(
@@ -59,6 +68,10 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                       ),
                       duration: Duration(seconds: 2),
                     );
+
+                    if (!mounted){
+                      return;
+                    }
 
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     feedScrollController.animateTo(0,
@@ -109,7 +122,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
     return Stack(
       children: [
         Image.file(
-          File(imagePath!),
+          File(xFile!.path),
           fit: BoxFit.fitWidth,
         ),
         Positioned(
@@ -119,7 +132,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
             icon: const Icon(Icons.cancel, color: Colors.white),
             onPressed: () {
               setState(() {
-                imagePath = null;
+                xFile = null;
               });
             },
           ),
@@ -154,7 +167,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                 }
               },
             ),
-            if (imagePath != null) _buildImage(),
+            if (xFile != null) _buildImage(),
             _buildRowAction(
                 const Icon(
                   Icons.image,
@@ -167,7 +180,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                 return;
               }
               setState(() {
-                imagePath = image.path;
+                xFile = image;
               });
             }),
             _buildRowAction(
@@ -182,7 +195,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                 return;
               }
               setState(() {
-                imagePath = image.path;
+                xFile = image;
               });
             }),
           ],
