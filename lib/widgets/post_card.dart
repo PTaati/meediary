@@ -110,22 +110,46 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _buildBottomMenu() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildLike(),
-        _buildComment(),
-        _buildShare(),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildLike(),
+          _buildComment(),
+          _buildShare(),
+        ],
+      ),
     );
   }
 
   Widget _buildImage() {
+    final width = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Image.file(
-        File(widget.post.imagePath!),
-        fit: BoxFit.fitWidth,
+      padding: const EdgeInsets.only(top: 10.0),
+      child: GestureDetector(
+        onTap: () {
+          showDialog(
+            barrierColor: Colors.black,
+            context: context,
+            builder: (context) {
+              return InteractiveViewer(
+                child: Image.file(
+                  File(widget.post.imagePath!),
+                  fit: BoxFit.contain,
+                ),
+              );
+            },
+          );
+        },
+        child: SizedBox(
+          width: width,
+          height: width,
+          child: Image.file(
+            File(widget.post.imagePath!),
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
@@ -133,10 +157,13 @@ class _PostCardState extends State<PostCard> {
   Widget _buildPostBody() {
     return Column(
       children: [
-        Text(
-          widget.post.title,
-          style: const TextStyle(
-            color: Colors.white,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Text(
+            widget.post.title,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
           ),
         ),
         if (widget.post.imagePath != null) _buildImage(),
@@ -160,11 +187,11 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.black,
+      color: Colors.black26,
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

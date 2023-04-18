@@ -20,7 +20,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         Provider<ObjectBox>(create: (_) => objectbox),
-        Provider<PostService>(create: (_) => postService),
+        ChangeNotifierProvider<PostService>(create: (_) => postService),
       ],
       child: const MeediaryApp(),
     ),

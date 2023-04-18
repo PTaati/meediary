@@ -40,6 +40,7 @@ dependencies:
   provider: ^6.0.5
   intl: ^0.18.0
   image_picker: ^0.8.7+3
+  full_screen_image_null_safe: ^2.0.0
 
 dev_dependencies:
   flutter_test:

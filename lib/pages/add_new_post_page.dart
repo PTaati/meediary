@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/services/post_services.dart';
 import 'package:provider/provider.dart';
@@ -49,17 +50,20 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                     postService.post(post);
 
                     const snackBar = SnackBar(
-                      backgroundColor: Colors.white24,
+                      backgroundColor: Colors.grey,
                       content: Text(
                         'บันทึกเรียบร้อย',
                         style: TextStyle(
                           color: Colors.white,
                         ),
                       ),
-                      duration: Duration(seconds: 1),
+                      duration: Duration(seconds: 2),
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    feedScrollController.animateTo(0,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.fastOutSlowIn);
                     Navigator.of(context).pop();
                   }
                 : null,
@@ -72,25 +76,29 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
 
   Widget _buildRowAction(Icon icon, String label, Future Function() onTap) {
     return GestureDetector(
+      excludeFromSemantics: true,
       onTap: onTap,
       child: Column(
         children: [
           const Divider(
             color: Colors.white54,
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              icon,
-              const SizedBox(
-                width: 20,
-              ),
-              Text(
-                label,
-                style: const TextStyle(fontSize: 18),
-              ),
-            ],
+          SizedBox(
+            height: 50,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                icon,
+                const SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  label,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
           ),
         ],
       ),

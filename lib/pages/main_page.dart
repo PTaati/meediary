@@ -21,10 +21,10 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     tabs = [
       const FeedPage(),
-      Text(_currentTab.name),
-      Text(_currentTab.name),
-      Text(_currentTab.name),
-      Text(_currentTab.name),
+      const Text('กำลังพัฒนา...'),
+      const SizedBox(),
+      const Text('กำลังพัฒนา...'),
+      const Text('กำลังพัฒนา...'),
     ];
   }
 
@@ -62,12 +62,14 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: tabs[_currentTab.index],
+      body: IndexedStack(
+        index: _currentTab.index,
+        alignment: AlignmentDirectional.center,
+        children: tabs,
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         onTap: (tab) async {
-          if (tab == BottomNavigationTab.home) {
+          if (tab == BottomNavigationTab.home && _currentTab == tab) {
             feedScrollController.animateTo(0,
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.fastOutSlowIn);
