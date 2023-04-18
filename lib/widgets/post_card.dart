@@ -172,7 +172,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _buildCreatedTime() {
-    final timeFormat = DateFormat('EEEE, MMM d, yyyy').format(
+    final timeFormat = DateFormat('EEEE, MMM d, yyyy, HH:mm:ss').format(
       widget.post.created,
     );
     return Text(

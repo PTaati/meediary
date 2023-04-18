@@ -49,11 +49,6 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search_outlined),
-              activeIcon: Icon(Icons.search),
-              label: 'Notification',
-            ),
-            BottomNavigationBarItem(
               icon: Icon(Icons.add_circle_outline_outlined),
               activeIcon: Icon(Icons.add_circle),
               label: 'New Post',

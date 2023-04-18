@@ -21,9 +21,8 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     tabs = [
       const FeedPage(),
-      const Text('กำลังพัฒนา...'),
       const SizedBox(),
-      const Text('กำลังพัฒนา...'),
+      const Text('ไม่มีการแจ้งเตือน'),
       const Text('กำลังพัฒนา...'),
     ];
   }
@@ -43,9 +42,6 @@ class _MainPageState extends State<MainPage> {
     switch (tab) {
       case BottomNavigationTab.home:
         // TODO(taati): implement on tab home
-        break;
-      case BottomNavigationTab.search:
-        // TODO(taati): implement on tab search
         break;
       case BottomNavigationTab.newPost:
         _onTapNewPost(context);
