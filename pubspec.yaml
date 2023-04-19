@@ -40,7 +40,6 @@ dependencies:
   provider: ^6.0.5
   intl: ^0.18.0
   image_picker: ^0.8.7+3
-  full_screen_image_null_safe: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +53,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   build_runner: ^2.3.3
   objectbox_generator: any
+  flutter_launcher_icons:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -68,7 +68,7 @@ flutter:
 
 #   To add assets to your application, add an assets section, like this:
   assets:
-    - /assets
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -95,3 +95,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+#  regenerate
+#  flutter pub get
+#  flutter pub run flutter_launcher_icons
+
+# To regen, run
+# flutter pub run flutter_launcher_icons:main
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/meediary_logo.png"
