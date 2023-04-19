@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
     tabs = [
       const FeedPage(),
       const SizedBox(),
-      const Text('ไม่มีการแจ้งเตือน'),
+      const Text('chat'),
       const ProfilePage(),
     ];
   }
@@ -55,7 +55,7 @@ class _MainPageState extends State<MainPage> {
       case BottomNavigationTab.newPost:
         _onTapNewPost(context);
         break;
-      case BottomNavigationTab.notification:
+      case BottomNavigationTab.chat:
         // TODO(taati): implement on tab notification
         break;
       case BottomNavigationTab.profile:

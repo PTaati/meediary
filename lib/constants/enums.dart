@@ -1,6 +1,6 @@
 enum BottomNavigationTab {
   home,
   newPost,
-  notification,
+  chat,
   profile,
 }

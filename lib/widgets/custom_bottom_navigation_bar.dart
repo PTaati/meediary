@@ -54,9 +54,9 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               label: 'New Post',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_none_outlined),
-              activeIcon: Icon(Icons.notifications),
-              label: 'Notification',
+              icon: Icon(Icons.chat_bubble_outline),
+              activeIcon: Icon(Icons.chat),
+              label: 'Chat',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.account_circle_outlined),
