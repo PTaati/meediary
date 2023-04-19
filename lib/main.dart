@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meediary/data_models/post.dart';
+import 'package:meediary/data_models/user.dart';
 import 'package:meediary/meediary_app.dart';
 import 'package:meediary/services/object_box.dart';
 import 'package:meediary/services/post_services.dart';
@@ -14,6 +15,17 @@ Future<void> main() async {
 
   objectbox = await ObjectBox.create();
   final postBox = objectbox.store.box<Post>();
+  final userBox = objectbox.store.box<User>();
+
+  late User user;
+  final users = userBox.getAll();
+  if (users.isEmpty){
+    user = User();
+    userBox.put(user);
+  } else {
+    user = users.first;
+  }
+
   postService = PostService(postBox, postBox.getAll().reversed.toList());
 
   runApp(
@@ -21,6 +33,7 @@ Future<void> main() async {
       providers: [
         Provider<ObjectBox>(create: (_) => objectbox),
         ChangeNotifierProvider<PostService>(create: (_) => postService),
+        ChangeNotifierProvider<User>(create: (_) => user),
       ],
       child: const MeediaryApp(),
     ),
