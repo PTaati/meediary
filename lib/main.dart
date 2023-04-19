@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/data_models/user.dart';
 import 'package:meediary/meediary_app.dart';
+import 'package:meediary/services/chat_service.dart';
 import 'package:meediary/services/object_box.dart';
 import 'package:meediary/services/post_services.dart';
 import 'package:provider/provider.dart';
@@ -15,10 +17,12 @@ Future<void> main() async {
 
   late ObjectBox objectbox;
   late PostService postService;
+  late ChatService chatService;
 
   objectbox = await ObjectBox.create();
   final postBox = objectbox.store.box<Post>();
   final userBox = objectbox.store.box<User>();
+  final chatMessageBox = objectbox.store.box<ChatMessage>();
 
   late User user;
   final users = userBox.getAll();
@@ -30,6 +34,7 @@ Future<void> main() async {
   }
 
   postService = PostService(postBox, postBox.getAll().reversed.toList());
+  chatService = ChatService(chatMessageBox, chatMessageBox.getAll());
 
   FlutterNativeSplash.remove();
   runApp(
@@ -37,6 +42,7 @@ Future<void> main() async {
       providers: [
         Provider<ObjectBox>(create: (_) => objectbox),
         ChangeNotifierProvider<PostService>(create: (_) => postService),
+        ChangeNotifierProvider<ChatService>(create: (_) => chatService),
         ChangeNotifierProvider<User>(create: (_) => user),
       ],
       child: const MeediaryApp(),

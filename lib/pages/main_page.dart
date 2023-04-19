@@ -6,6 +6,8 @@ import 'package:meediary/pages/feed_page.dart';
 import 'package:meediary/pages/profile_page.dart';
 import 'package:meediary/widgets/custom_bottom_navigation_bar.dart';
 
+import 'chat_page.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -24,7 +26,7 @@ class _MainPageState extends State<MainPage> {
     tabs = [
       const FeedPage(),
       const SizedBox(),
-      const Text('chat'),
+      const ChatPage(),
       const ProfilePage(),
     ];
   }
