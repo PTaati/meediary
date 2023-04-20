@@ -18,7 +18,7 @@ class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
     final createdTimeFormat = displayDateTimeFormat(
-      widget.message.created,
+      widget.message.timeToSend,
     );
 
     return Column(

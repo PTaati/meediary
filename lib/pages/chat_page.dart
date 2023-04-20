@@ -56,6 +56,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildChatHistory(List<ChatMessage> messages) {
+    final now = DateTime.now();
     return Padding(
       padding: const EdgeInsets.only(left: 20),
       child: Container(
@@ -63,6 +64,9 @@ class _ChatPageState extends State<ChatPage> {
         child: ListView(
           controller: chatScrollController,
           children: messages
+              .where(
+                (message) => message.timeToSend.isBefore(now),
+              )
               .map((message) => MessageCard(
                     message: message,
                   ))
@@ -73,105 +77,128 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildSendSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              controller: _textEditingController,
-              cursorColor: Colors.white54,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                hintText: 'พิมพ์ช้อความ...',
-              ),
-              onChanged: (value) {
-                setState(() {});
-              },
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            controller: _textEditingController,
+            cursorColor: Colors.white54,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              hintText: 'พิมพ์ช้อความ...',
+              fillColor: Colors.white24,
+              filled: true,
             ),
+            onChanged: (value) {
+              setState(() {});
+            },
           ),
-          IconButton(
-              onPressed: () {
-                if (_textEditingController.text.isEmpty) {
-                  chatScrollController.animateTo(
-                    chatScrollController.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.fastOutSlowIn,
-                  );
-                  return;
-                }
+        ),
+        IconButton(
+          onPressed: () {
+            if (_textEditingController.text.isEmpty) {
+              chatScrollController.animateTo(
+                chatScrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.fastOutSlowIn,
+              );
+              return;
+            }
 
-                final chatService = Provider.of<ChatService>(
-                  context,
-                  listen: false,
-                );
-                final timeToSend = DateTime.now();
-                final messageObject = ChatMessage(
-                  _textEditingController.text,
-                  DateTime.now(),
-                  timeToSend,
-                );
+            final chatService = Provider.of<ChatService>(
+              context,
+              listen: false,
+            );
+            final timeToSend = selectSendTime ?? DateTime.now();
+            final messageObject = ChatMessage(
+              _textEditingController.text,
+              DateTime.now(),
+              timeToSend,
+            );
 
-                chatService.send(messageObject);
+            chatService.send(messageObject);
 
-                setState(() {
-                  _textEditingController.text = '';
-                });
+            setState(() {
+              _textEditingController.text = '';
+              selectSendTime = null;
+            });
 
-                FocusManager.instance.primaryFocus?.unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
 
-                chatScrollController.animateTo(
-                  chatScrollController.position.maxScrollExtent,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.fastOutSlowIn,
-                );
-              },
-              icon: Icon(
-                _textEditingController.text.isNotEmpty
-                    ? Icons.send
-                    : Icons.keyboard_double_arrow_down,
-                color: Colors.white,
-              ))
-        ],
-      ),
+            chatScrollController.animateTo(
+              chatScrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.fastOutSlowIn,
+            );
+          },
+          icon: Icon(
+            _textEditingController.text.isNotEmpty
+                ? Icons.send
+                : Icons.keyboard_double_arrow_down,
+            color: Colors.white,
+          ),
+        )
+      ],
     );
   }
 
   Widget _buildTimeSelectedWidget() {
-    if (selectSendTime != null){
+    if (selectSendTime != null) {
       displaySendTime = displayDateTimeFormat(selectSendTime!);
     }
 
-    return TextButton(
-      onPressed: () {
-        DatePicker.showDateTimePicker(
-          context,
-          showTitleActions: true,
-          minTime: DateTime.now(),
-          maxTime: DateTime(2222, 12, 31),
-          onChanged: (date) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const SizedBox(
+          width: 40,
+        ),
+        TextButton(
+          onPressed: () {
+            DatePicker.showDateTimePicker(
+              context,
+              showTitleActions: true,
+              minTime: DateTime.now(),
+              maxTime: DateTime(2222, 12, 31),
+              onChanged: (date) {},
+              onConfirm: (date) {
+                setState(() {
+                  selectSendTime = date;
+                });
+              },
+              currentTime: DateTime.now(),
+            );
           },
-          onConfirm: (date) {
-            setState(() {
-              selectSendTime = date;
-            });
-          },
-          currentTime: DateTime.now(),
-        );
-      },
-      child: selectSendTime != null
-          ? Text(
-              'Send Time: $displaySendTime',
-              style: const TextStyle(color: Colors.white54),
-            )
-          : const Text(
-              'Show Date Send Time',
-              style: TextStyle(color: Colors.orangeAccent),
-            ),
+          child: selectSendTime != null
+              ? Text(
+                  '$displaySendTime',
+                  style: const TextStyle(color: Colors.grey),
+                )
+              : const Text(
+                  'เลือกเวลาเพื่อส่งหาคุณในอนาคต',
+                  style: TextStyle(color: Colors.grey),
+                ),
+        ),
+        selectSendTime != null
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    selectSendTime = null;
+                  });
+                },
+                icon: const Icon(
+                  Icons.cancel_schedule_send,
+                  color: Colors.white54,
+                ),
+              )
+            : const SizedBox(
+                width: 40,
+              ),
+      ],
     );
   }
 
