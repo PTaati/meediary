@@ -10,6 +10,7 @@ import 'package:meediary/services/notification_service.dart';
 import 'package:meediary/utils/date_time_utils.dart';
 import 'package:meediary/widgets/message_card.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -97,7 +98,7 @@ class _ChatPageState extends State<ChatPage> {
               enabledBorder: InputBorder.none,
               errorBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
-              hintText: 'พิมพ์ช้อความ...',
+              hintText: 'พิมพ์ข้อความ...',
               fillColor: Colors.white24,
               filled: true,
             ),
@@ -132,7 +133,7 @@ class _ChatPageState extends State<ChatPage> {
 
             if (selectSendTime != null) {
               notificationService.addScheduleNotification(
-                title: 'คุณได้รับข้อความจากตัวคุณในอดีตเมื่อ '
+                title: 'ข้อความจากตัวคุณในอดีต '
                     '${displayDateTimeFormat(messageObject.created)}',
                 body: messageObject.message,
                 notificationTime: selectSendTime!,
@@ -177,19 +178,25 @@ class _ChatPageState extends State<ChatPage> {
         ),
         TextButton(
           onPressed: () {
-            DatePicker.showDateTimePicker(
-              context,
-              showTitleActions: true,
-              minTime: DateTime.now(),
-              maxTime: DateTime(2222, 12, 31),
-              onChanged: (date) {},
-              onConfirm: (date) {
-                setState(() {
-                  selectSendTime = date;
-                });
-              },
-              currentTime: DateTime.now(),
-            );
+            DatePicker.showDateTimePicker(context,
+                showTitleActions: true,
+                locale: LocaleType.th,
+                minTime: DateTime.now(),
+                maxTime: DateTime(2222, 12, 31),
+                onChanged: (date) {}, onConfirm: (date) {
+              setState(() {
+                selectSendTime = date;
+              });
+            },
+                currentTime: DateTime.now(),
+                theme: const DatePickerTheme(
+                  backgroundColor: Colors.black,
+                  cancelStyle:
+                      TextStyle(color: Colors.grey, fontSize: 16),
+                  doneStyle: TextStyle(color: Colors.white, fontSize: 16),
+                  itemStyle: TextStyle(color: Colors.white, fontSize: 18),
+                  containerHeight: 300,
+                ));
           },
           child: selectSendTime != null
               ? Text(
