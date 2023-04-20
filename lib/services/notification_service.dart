@@ -6,7 +6,7 @@ class NotificationService {
   Future<void> setUpNotification() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/launcher_icon');
 
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -14,17 +14,19 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    await flutterLocalNotificationsPlugin
+    flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            MacOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestPermission();
   }
 
-  Future<void> showNotification() async {
+  Future<void> grantPermission() async {}
+
+  Future<void> showNotification({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
     const androidNotificationDetails = AndroidNotificationDetails(
         'your channel id', 'your channel name',
         channelDescription: 'your channel description',
@@ -35,7 +37,11 @@ class NotificationService {
     const notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', notificationDetails,
-        payload: 'item x');
+      0,
+      title,
+      body,
+      notificationDetails,
+      payload: payload,
+    );
   }
 }
