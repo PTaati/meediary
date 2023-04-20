@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/services/chat_service.dart';
+import 'package:meediary/utils/date_time_utils.dart';
 import 'package:meediary/widgets/message_card.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +20,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final _textEditingController = TextEditingController();
   late StreamSubscription _keyboardSubscription;
+  DateTime? selectSendTime;
+  String? displaySendTime;
 
   @override
   void initState() {
@@ -137,6 +141,40 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  Widget _buildTimeSelectedWidget() {
+    if (selectSendTime != null){
+      displaySendTime = displayDateTimeFormat(selectSendTime!);
+    }
+
+    return TextButton(
+      onPressed: () {
+        DatePicker.showDateTimePicker(
+          context,
+          showTitleActions: true,
+          minTime: DateTime.now(),
+          maxTime: DateTime(2222, 12, 31),
+          onChanged: (date) {
+          },
+          onConfirm: (date) {
+            setState(() {
+              selectSendTime = date;
+            });
+          },
+          currentTime: DateTime.now(),
+        );
+      },
+      child: selectSendTime != null
+          ? Text(
+              'Send Time: $displaySendTime',
+              style: const TextStyle(color: Colors.white54),
+            )
+          : const Text(
+              'Show Date Send Time',
+              style: TextStyle(color: Colors.orangeAccent),
+            ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatService = Provider.of<ChatService>(context);
@@ -147,6 +185,7 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             Expanded(child: _buildChatHistory(chatService.messages)),
             const Divider(color: Colors.white24),
+            _buildTimeSelectedWidget(),
             _buildSendSection(),
           ],
         ),

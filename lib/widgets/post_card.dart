@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:meediary/data_models/post.dart';
+import 'package:meediary/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 
 import '../services/post_services.dart';
@@ -172,7 +172,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _buildCreatedTime() {
-    final timeFormat = DateFormat('EEEE, MMM d, yyyy, HH:mm:ss').format(
+    final timeFormat = displayDateTimeFormat(
       widget.post.created,
     );
     return Text(

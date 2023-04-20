@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:meediary/data_models/chat_message.dart';
+import 'package:meediary/utils/date_time_utils.dart';
 
 class MessageCard extends StatefulWidget {
   const MessageCard({
@@ -17,7 +17,7 @@ class MessageCard extends StatefulWidget {
 class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
-    final createdTimeFormat = DateFormat('EEEE, MMM d, yyyy, HH:mm:ss').format(
+    final createdTimeFormat = displayDateTimeFormat(
       widget.message.created,
     );
 
