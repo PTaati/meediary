@@ -34,7 +34,14 @@ Future<void> main() async {
   }
 
   postService = PostService(postBox, postBox.getAll().reversed.toList());
-  chatService = ChatService(chatMessageBox, chatMessageBox.getAll());
+
+  final chatMessageList = chatMessageBox.getAll();
+
+  chatMessageList.sort((a,b) {
+    return a.timeToSend.compareTo(b.timeToSend);
+  });
+
+  chatService = ChatService(chatMessageBox, chatMessageList);
 
   FlutterNativeSplash.remove();
   runApp(
