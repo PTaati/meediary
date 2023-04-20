@@ -4,7 +4,9 @@ import 'package:meediary/constants/globals.dart';
 import 'package:meediary/constants/routes.dart';
 import 'package:meediary/pages/feed_page.dart';
 import 'package:meediary/pages/profile_page.dart';
+import 'package:meediary/services/notification_service.dart';
 import 'package:meediary/widgets/custom_bottom_navigation_bar.dart';
+import 'package:provider/provider.dart';
 
 import 'chat_page.dart';
 
@@ -36,7 +38,6 @@ class _MainPageState extends State<MainPage> {
     _pageViewController.dispose();
     super.dispose();
   }
-
 
   void _onTapNewPost(BuildContext context) async {
     await Navigator.of(context).pushNamed(RouteNames.addNewPostPage);
@@ -76,10 +77,20 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         onTap: (tab) async {
+          final notificationService = Provider.of<NotificationService>(
+            context,
+            listen: false,
+          );
+          await notificationService.showNotification();
+
           if (tab == BottomNavigationTab.home && _currentTab == tab) {
             feedScrollController.animateTo(0,
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.fastOutSlowIn);
+          }
+
+          if (!mounted){
+
           }
           _handleOnTabBottomNavigationBar(tab, context);
           setState(

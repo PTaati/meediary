@@ -5,6 +5,7 @@ import 'package:meediary/data_models/post.dart';
 import 'package:meediary/data_models/user.dart';
 import 'package:meediary/meediary_app.dart';
 import 'package:meediary/services/chat_service.dart';
+import 'package:meediary/services/notification_service.dart';
 import 'package:meediary/services/object_box.dart';
 import 'package:meediary/services/post_services.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,10 @@ Future<void> main() async {
   // to store the database in.
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  final notificationService = NotificationService();
+
+  await notificationService.setUpNotification();
 
   late ObjectBox objectbox;
   late PostService postService;
@@ -51,6 +56,7 @@ Future<void> main() async {
         ChangeNotifierProvider<PostService>(create: (_) => postService),
         ChangeNotifierProvider<ChatService>(create: (_) => chatService),
         ChangeNotifierProvider<User>(create: (_) => user),
+        Provider<NotificationService>(create: (_) => notificationService),
       ],
       child: const MeediaryApp(),
     ),
