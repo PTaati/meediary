@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/services/chat_service.dart';
@@ -14,6 +17,39 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final _textEditingController = TextEditingController();
+  late StreamSubscription _keyboardSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        chatScrollController.animateTo(
+          chatScrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastOutSlowIn,
+        );
+      },
+    );
+
+    final keyboardVisibilityController = KeyboardVisibilityController();
+    _keyboardSubscription =
+        keyboardVisibilityController.onChange.listen((bool visible) {
+      Future.delayed(const Duration(seconds: 1)).then((value) {
+        chatScrollController.animateTo(
+          chatScrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastOutSlowIn,
+        );
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _keyboardSubscription.cancel();
+    super.dispose();
+  }
 
   Widget _buildChatHistory(List<ChatMessage> messages) {
     return Padding(
@@ -82,6 +118,8 @@ class _ChatPageState extends State<ChatPage> {
                   _textEditingController.text = '';
                 });
 
+                FocusManager.instance.primaryFocus?.unfocus();
+
                 chatScrollController.animateTo(
                   chatScrollController.position.maxScrollExtent,
                   duration: const Duration(milliseconds: 500),
@@ -108,7 +146,7 @@ class _ChatPageState extends State<ChatPage> {
         body: Column(
           children: [
             Expanded(child: _buildChatHistory(chatService.messages)),
-            const Divider(color: Colors.white),
+            const Divider(color: Colors.white24),
             _buildSendSection(),
           ],
         ),
