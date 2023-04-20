@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:meediary/constants/enums.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/constants/routes.dart';
 import 'package:meediary/pages/feed_page.dart';
 import 'package:meediary/pages/profile_page.dart';
+import 'package:meediary/services/notification_service.dart';
 import 'package:meediary/widgets/custom_bottom_navigation_bar.dart';
 
 import 'chat_page.dart';
@@ -19,6 +22,7 @@ class _MainPageState extends State<MainPage> {
   BottomNavigationTab _currentTab = BottomNavigationTab.home;
   late List<Widget> tabs;
   final _pageViewController = PageController();
+  late StreamSubscription<String> notificationSubscription;
 
   @override
   void initState() {
@@ -29,11 +33,18 @@ class _MainPageState extends State<MainPage> {
       const ChatPage(),
       const ProfilePage(),
     ];
+    notificationSubscription =
+        notificationStreamController.stream.listen((event) {
+      if (event == 'chatFromPast') {
+        _currentTab = BottomNavigationTab.chat;
+      }
+    });
   }
 
   @override
   void dispose() {
     _pageViewController.dispose();
+    notificationSubscription.cancel();
     super.dispose();
   }
 

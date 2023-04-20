@@ -136,6 +136,7 @@ class _ChatPageState extends State<ChatPage> {
                     '${displayDateTimeFormat(messageObject.created)}',
                 body: messageObject.message,
                 notificationTime: selectSendTime!,
+                payload: 'chatFromPast',
               );
             }
 

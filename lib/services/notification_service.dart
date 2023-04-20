@@ -1,7 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:uuid/uuid.dart';
+
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  notificationStreamController.add(notificationResponse.payload ?? '');
+}
+
+StreamController<String> notificationStreamController =
+    StreamController.broadcast();
 
 class NotificationService {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -15,7 +25,10 @@ class NotificationService {
       android: initializationSettingsAndroid,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+    );
 
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
