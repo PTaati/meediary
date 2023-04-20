@@ -6,6 +6,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/services/chat_service.dart';
+import 'package:meediary/services/notification_service.dart';
 import 'package:meediary/utils/date_time_utils.dart';
 import 'package:meediary/widgets/message_card.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +23,17 @@ class _ChatPageState extends State<ChatPage> {
   late StreamSubscription _keyboardSubscription;
   DateTime? selectSendTime;
   String? displaySendTime;
+  late NotificationService notificationService;
 
   @override
   void initState() {
     super.initState();
+
+    notificationService = Provider.of<NotificationService>(
+      context,
+      listen: false,
+    );
+
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         chatScrollController.animateTo(
@@ -121,6 +129,15 @@ class _ChatPageState extends State<ChatPage> {
             );
 
             chatService.send(messageObject);
+
+            if (selectSendTime != null) {
+              notificationService.addScheduleNotification(
+                title: 'คุณได้รับข้อความจากตัวคุณในอดีตเมื่อ '
+                    '${displayDateTimeFormat(messageObject.created)}',
+                body: messageObject.message,
+                notificationTime: selectSendTime!,
+              );
+            }
 
             setState(() {
               _textEditingController.text = '';

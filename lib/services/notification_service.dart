@@ -1,4 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -18,30 +20,57 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestPermission();
+
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
   }
 
-  Future<void> grantPermission() async {}
+  static String channelId = 'MEEDIARY_NOTIFICATION_CHANNEL_ID';
+  static String channelName = 'MEEDIARY_NOTIFICATION_CHANNEL';
+  static AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
+    channelId,
+    channelName,
+    importance: Importance.max,
+    priority: Priority.high,
+    ticker: 'ticker',
+  );
+
+  static NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
 
   Future<void> showNotification({
     required String title,
     required String body,
     String? payload,
   }) async {
-    const androidNotificationDetails = AndroidNotificationDetails(
-        'your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-
-    const notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.show(
       0,
       title,
       body,
       notificationDetails,
       payload: payload,
+    );
+  }
+
+  Future<void> addScheduleNotification({
+    required String title,
+    required String body,
+    required,
+    required DateTime notificationTime,
+  }) async {
+    tz.TZDateTime.from(notificationTime, tz.local);
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0, title,
+      body,
+      tz.TZDateTime.from(notificationTime, tz.local),
+// tz.TZDateTime.now(tz.local).add(
+//   const Duration(seconds: 5),
+// ),
+      notificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 }
