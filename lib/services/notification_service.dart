@@ -6,7 +6,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:uuid/uuid.dart';
 
 @pragma('vm:entry-point')
-void notificationTapBackground(NotificationResponse notificationResponse) {
+void notificationTap(NotificationResponse notificationResponse) {
   notificationStreamController.add(notificationResponse.payload ?? '');
 }
 
@@ -27,7 +27,8 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+      onDidReceiveNotificationResponse: notificationTap,
+      onDidReceiveBackgroundNotificationResponse: notificationTap,
     );
 
     flutterLocalNotificationsPlugin
