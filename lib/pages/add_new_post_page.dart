@@ -7,6 +7,7 @@ import 'package:meediary/data_models/post.dart';
 import 'package:meediary/services/post_services.dart';
 import 'package:meediary/utils/file_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:rive/rive.dart';
 
 class AddNewPostPage extends StatefulWidget {
   const AddNewPostPage({Key? key}) : super(key: key);
@@ -20,6 +21,13 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
   final TextEditingController _textEditingController = TextEditingController();
   final ImagePicker picker = ImagePicker();
   XFile? xFile;
+  late RiveAnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = SimpleAnimation('idle');
+  }
 
   Widget _buildHeaderSection() {
     return Padding(
@@ -224,6 +232,14 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
           color: Colors.white54,
         ),
         Expanded(child: _buildBodySection()),
+        SizedBox(
+          height: 300,
+          child: RiveAnimation.asset(
+            'assets/3984-8296-car.riv',
+            controllers: [_controller],
+            fit: BoxFit.cover,
+          ),
+        )
       ],
     );
   }
