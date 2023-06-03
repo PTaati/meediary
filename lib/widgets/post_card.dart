@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:rive/rive.dart';
 
 import '../services/post_services.dart';
 
@@ -22,28 +23,60 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   late PostService postService;
 
+  late RiveAnimationController _controller;
+  bool _isLikeAnimate = false;
+
   @override
   void initState() {
     super.initState();
 
+    _controller = SimpleAnimation('idle');
     postService = Provider.of<PostService>(context, listen: false);
   }
 
   Widget _buildLike() {
     return GestureDetector(
       excludeFromSemantics: true,
-      onTap: () {
+      onTap:_isLikeAnimate ? null : () async {
         setState(() {
           widget.post.isLike = !widget.post.isLike;
           postService.postBox.put(widget.post);
         });
+
+        if (widget.post.isLike) {
+          _controller = SimpleAnimation('preview');
+
+          setState(() {
+            _isLikeAnimate = true;
+          });
+          await Future.delayed(const Duration(seconds: 1), () {
+            if (!mounted) {
+              return;
+            }
+            _controller = SimpleAnimation('idle');
+
+            setState(() {
+              _isLikeAnimate = false;
+            });
+          });
+        }
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
+          if (_isLikeAnimate && widget.post.isLike) Center(
+            child: SizedBox(
+              height: 26,
+              width: 26,
+              child: RiveAnimation.asset(
+                'assets/1683-3324-like-button.riv',
+                controllers: [_controller],
+                fit: BoxFit.cover,
+              ),
+            ),) else Icon(
             widget.post.isLike ? Icons.favorite : Icons.favorite_outline,
-            color: Colors.white,
+            size: 26,
+            color: widget.post.isLike ? const Color(0xFFF47C7C) : Colors.white,
           ),
           const SizedBox(
             width: 10,
@@ -124,7 +157,10 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _buildImage() {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: GestureDetector(
