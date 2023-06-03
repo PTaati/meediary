@@ -34,50 +34,61 @@ class _PostCardState extends State<PostCard> {
     postService = Provider.of<PostService>(context, listen: false);
   }
 
+  Future<void> _likeAnimation() async {
+    _controller = SimpleAnimation('preview');
+
+    setState(() {
+      _isLikeAnimate = true;
+    });
+    await Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) {
+        return;
+      }
+      _controller = SimpleAnimation('idle');
+
+      setState(() {
+        _isLikeAnimate = false;
+      });
+    });
+  }
+
+  Future<void> _onTapLike() async {
+    setState(() {
+      widget.post.isLike = !widget.post.isLike;
+      postService.postBox.put(widget.post);
+    });
+
+    if (widget.post.isLike) {
+      await _likeAnimation();
+    }
+  }
+
   Widget _buildLike() {
     return GestureDetector(
       excludeFromSemantics: true,
-      onTap:_isLikeAnimate ? null : () async {
-        setState(() {
-          widget.post.isLike = !widget.post.isLike;
-          postService.postBox.put(widget.post);
-        });
-
-        if (widget.post.isLike) {
-          _controller = SimpleAnimation('preview');
-
-          setState(() {
-            _isLikeAnimate = true;
-          });
-          await Future.delayed(const Duration(seconds: 1), () {
-            if (!mounted) {
-              return;
-            }
-            _controller = SimpleAnimation('idle');
-
-            setState(() {
-              _isLikeAnimate = false;
-            });
-          });
-        }
-      },
+      onTap: _isLikeAnimate ? null : _onTapLike,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (_isLikeAnimate && widget.post.isLike) Center(
-            child: SizedBox(
-              height: 26,
-              width: 26,
-              child: RiveAnimation.asset(
-                'assets/1683-3324-like-button.riv',
-                controllers: [_controller],
-                fit: BoxFit.cover,
+          if (_isLikeAnimate && widget.post.isLike)
+            Center(
+              child: SizedBox(
+                height: 26,
+                width: 26,
+                child: RiveAnimation.asset(
+                  'assets/1683-3324-like-button.riv',
+                  controllers: [_controller],
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),) else Icon(
-            widget.post.isLike ? Icons.favorite : Icons.favorite_outline,
-            size: 26,
-            color: widget.post.isLike ? const Color(0xFFF47C7C) : Colors.white,
-          ),
+            )
+          else
+            Icon(
+              widget.post.isLike ? Icons.favorite : Icons.favorite_outline,
+              size: 26,
+              color:
+                  widget.post.isLike ? const Color(0xFFF47C7C) : Colors.white,
+            ),
           const SizedBox(
             width: 10,
           ),
@@ -149,7 +160,8 @@ class _PostCardState extends State<PostCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildLike(),
-          _buildComment(),
+          // _buildComment(),
+          _buildCreatedTime(),
           _buildShare(),
         ],
       ),
@@ -157,35 +169,59 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _buildImage() {
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final width = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
-      child: GestureDetector(
-        onTap: () {
-          showDialog(
-            barrierColor: Colors.black,
-            context: context,
-            builder: (context) {
-              return InteractiveViewer(
-                child: Image.file(
-                  File(widget.post.imagePath!),
-                  fit: BoxFit.contain,
-                ),
+      child: Stack(
+        children: [
+          GestureDetector(
+            onDoubleTap: () async {
+              if (widget.post.isLike) {
+                await _likeAnimation();
+              } else {
+                await _onTapLike();
+              }
+            },
+            onTap: () {
+              showDialog(
+                barrierColor: Colors.black,
+                context: context,
+                builder: (context) {
+                  return InteractiveViewer(
+                    child: Image.file(
+                      File(widget.post.imagePath!),
+                      fit: BoxFit.contain,
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-        child: SizedBox(
-          width: width,
-          height: width,
-          child: Image.file(
-            File(widget.post.imagePath!),
-            fit: BoxFit.cover,
+            child: SizedBox(
+              width: width,
+              height: width,
+              child: Image.file(
+                File(widget.post.imagePath!),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
+          if (_isLikeAnimate && widget.post.isLike)
+            SizedBox(
+              width: width,
+              height: width,
+              child: Center(
+                child: SizedBox(
+                  height: width/3,
+                  width: width/3,
+                  child: RiveAnimation.asset(
+                    'assets/1683-3324-like-button.riv',
+                    controllers: [_controller],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            )
+        ],
       ),
     );
   }
@@ -224,26 +260,21 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.black26,
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(
-                  height: 30,
-                ),
-                _buildPostBody(),
-                const SizedBox(
-                  height: 30,
-                ),
-                _buildBottomMenu(),
-              ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(
+              height: 30,
             ),
-          ),
-          Positioned(left: 10, top: 10, child: _buildCreatedTime()),
-        ],
+            _buildPostBody(),
+            const SizedBox(
+              height: 30,
+            ),
+            _buildBottomMenu(),
+          ],
+        ),
       ),
     );
   }
