@@ -2,7 +2,7 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class ChatMessage{
-  ChatMessage(this.message, this.created, this.timeToSend);
+  ChatMessage(this.message, this.created, this.timeToSend, this.isSchedule);
 
   @Id()
   int id = 0;
@@ -10,4 +10,5 @@ class ChatMessage{
   String message;
   DateTime created;
   DateTime timeToSend;
+  bool isSchedule;
 }

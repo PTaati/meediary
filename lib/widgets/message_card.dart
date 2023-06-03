@@ -23,8 +23,18 @@ class _MessageCardState extends State<MessageCard> {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: widget.message.isSchedule ? CrossAxisAlignment.start : CrossAxisAlignment.end,
       children: [
+        if (widget.message.isSchedule) Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            '($createdTimeFormat) คุณในอดีตบอกว่า',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12.0,
+            ),
+          ),
+        ),
         Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40.0),
@@ -40,7 +50,7 @@ class _MessageCardState extends State<MessageCard> {
             ),
           ),
         ),
-        Padding(
+        if (!widget.message.isSchedule)  Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
             createdTimeFormat,

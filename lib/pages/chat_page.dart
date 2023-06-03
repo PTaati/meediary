@@ -76,8 +76,15 @@ class _ChatPageState extends State<ChatPage> {
               .where(
                 (message) => message.timeToSend.isBefore(now),
               )
-              .map((message) => MessageCard(
-                    message: message,
+              .map((message) => Row(
+                    mainAxisAlignment: message.isSchedule
+                        ? MainAxisAlignment.start
+                        : MainAxisAlignment.end,
+                    children: [
+                      MessageCard(
+                        message: message,
+                      ),
+                    ],
                   ))
               .toList(),
         ),
@@ -122,11 +129,13 @@ class _ChatPageState extends State<ChatPage> {
               context,
               listen: false,
             );
-            final timeToSend = selectSendTime ?? DateTime.now();
+            final now = DateTime.now();
+            final timeToSend = selectSendTime ?? now;
             final messageObject = ChatMessage(
               _textEditingController.text,
-              DateTime.now(),
+              now,
               timeToSend,
+              timeToSend != now,
             );
 
             chatService.send(messageObject);
@@ -191,8 +200,7 @@ class _ChatPageState extends State<ChatPage> {
                 currentTime: DateTime.now(),
                 theme: const DatePickerTheme(
                   backgroundColor: Colors.black,
-                  cancelStyle:
-                      TextStyle(color: Colors.grey, fontSize: 16),
+                  cancelStyle: TextStyle(color: Colors.grey, fontSize: 16),
                   doneStyle: TextStyle(color: Colors.white, fontSize: 16),
                   itemStyle: TextStyle(color: Colors.white, fontSize: 18),
                   containerHeight: 300,
