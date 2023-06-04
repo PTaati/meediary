@@ -115,6 +115,22 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _buildSettings() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(RouteNames.settingPage);
+            },
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.grey,
+            ))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final postService = Provider.of<PostService>(context);
@@ -127,6 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          _buildSettings(),
           _buildProfileDetail(user),
           const Divider(
             color: Colors.white24,
