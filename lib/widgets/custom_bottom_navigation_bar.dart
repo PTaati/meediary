@@ -16,7 +16,7 @@ class CustomBottomNavigationBar extends StatefulWidget {
 }
 
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
-  int _currentTab = 0;
+  int _currentTab = 3;
 
   @override
   Widget build(BuildContext context) {

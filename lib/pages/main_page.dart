@@ -19,7 +19,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  BottomNavigationTab _currentTab = BottomNavigationTab.home;
+  BottomNavigationTab _currentTab = BottomNavigationTab.profile;
   late List<Widget> tabs;
   final _pageViewController = PageController();
   late StreamSubscription<String> notificationSubscription;
