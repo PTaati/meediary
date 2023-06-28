@@ -139,7 +139,7 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
     return Stack(
       children: [
         Image.file(
-          File(widget.post?.imagePath ?? xFile!.path),
+          File((_deleteOldImage ? null :widget.post?.imagePath) ?? xFile!.path),
           fit: BoxFit.fitWidth,
         ),
         Positioned(
@@ -213,6 +213,7 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
               setState(() {
                 xFile = image;
                 _canSave = true;
+                _deleteOldImage = true;
               });
             }),
             _buildRowAction(
@@ -229,6 +230,7 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
               setState(() {
                 xFile = image;
                 _canSave = true;
+                _deleteOldImage = true;
               });
             }),
           ],

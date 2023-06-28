@@ -17,4 +17,17 @@ class ChatService with ChangeNotifier {
     });
     notifyListeners();
   }
+
+  void deleteMessage(ChatMessage message) {
+    chatMessageBox.remove(message.id);
+
+    final chatMessageList = chatMessageBox.getAll();
+
+    chatMessageList.sort((a,b) {
+      return a.timeToSend.compareTo(b.timeToSend);
+    });
+
+    messages = chatMessageList;
+    notifyListeners();
+  }
 }
