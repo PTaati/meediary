@@ -6,6 +6,7 @@ import 'package:meediary/constants/routes.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/data_models/user.dart';
 import 'package:meediary/services/post_services.dart';
+import 'package:meediary/services/snackbar_service.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -121,7 +122,8 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(RouteNames.settingPage);
+              SnackBarService.showSnackBar('อดใจรออีกนิดน้า', context);
+              // Navigator.of(context).pushNamed(RouteNames.settingPage);
             },
             icon: const Icon(
               Icons.settings,
@@ -134,8 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final postService = Provider.of<PostService>(context);
-    final imagePosts =
-        postService.posts.where((post) => post.imagePath != null).toList();
+    // final imagePosts =
+    //     postService.posts.where((post) => post.imagePath != null).toList();
 
     final user = Provider.of<User>(context);
 
@@ -144,11 +146,11 @@ class _ProfilePageState extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildSettings(),
-          _buildProfileDetail(user),
-          const Divider(
-            color: Colors.white24,
-          ),
-          Expanded(child: _buildImageGrid(imagePosts)),
+          Expanded(child: _buildProfileDetail(user)),
+          // const Divider(
+          //   color: Colors.white24,
+          // ),
+          // Expanded(child: _buildImageGrid(imagePosts)),
         ],
       ),
     );

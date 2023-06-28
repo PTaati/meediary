@@ -30,21 +30,23 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     final postService = Provider.of<PostService>(context);
 
-    return Stack(
-      children: [
-        _isFeed ? Container(
-          color: Colors.white24,
-          child: ListView(
-            controller: feedScrollController,
-            children: postService.posts
-                .map((post) => PostCard(
-                      post: post,
-                    ))
-                .toList(),
-          ),
-        ) : const TableFeedPage(),
-        Align(alignment: Alignment.bottomRight, child: _buildSwitchMode()),
-      ],
+    return SafeArea(
+      child: Stack(
+        children: [
+          _isFeed ? Container(
+            color: Colors.white24,
+            child: ListView(
+              controller: feedScrollController,
+              children: postService.posts
+                  .map((post) => PostCard(
+                        post: post,
+                      ))
+                  .toList(),
+            ),
+          ) : const TableFeedPage(),
+          Align(alignment: Alignment.topLeft, child: _buildSwitchMode()),
+        ],
+      ),
     );
   }
 }

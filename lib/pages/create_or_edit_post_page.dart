@@ -5,28 +5,39 @@ import 'package:image_picker/image_picker.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/services/post_services.dart';
+import 'package:meediary/services/snackbar_service.dart';
 import 'package:meediary/utils/file_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 
-class AddNewPostPage extends StatefulWidget {
-  const AddNewPostPage({Key? key}) : super(key: key);
+class CreateOrEditPostPage extends StatefulWidget {
+  const CreateOrEditPostPage({this.post, Key? key}) : super(key: key);
+
+  final Post? post;
 
   @override
-  State<AddNewPostPage> createState() => _AddNewPostPageState();
+  State<CreateOrEditPostPage> createState() => _CreateOrEditPostPageState();
 }
 
-class _AddNewPostPageState extends State<AddNewPostPage> {
+class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
   bool _canSave = false;
   final TextEditingController _textEditingController = TextEditingController();
   final ImagePicker picker = ImagePicker();
   XFile? xFile;
   late RiveAnimationController _controller;
+  bool _deleteOldImage = false;
 
   @override
   void initState() {
     super.initState();
     _controller = SimpleAnimation('idle');
+
+    if (widget.post != null){
+      _textEditingController.text = widget.post?.title ?? '';
+      if (_textEditingController.text.isNotEmpty){
+        _canSave = true;
+      }
+    }
   }
 
   Widget _buildHeaderSection() {
@@ -41,47 +52,45 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
             },
             icon: const Icon(Icons.close),
           ),
-          const Text(
-            'เพิ่มบันทึก',
-            style: TextStyle(fontSize: 24),
+          Text(
+            widget.post != null ? 'แก้ไขบันทึก' :'เพิ่มบันทึก',
+            style: const TextStyle(fontSize: 24),
           ),
           IconButton(
             onPressed: _canSave
                 ? () async {
                     final postService =
                         Provider.of<PostService>(context, listen: false);
-
                     String? imagePath;
 
                     if (xFile != null) {
                       imagePath = await saveFileInApp(xFile!);
                     }
 
-                    final post = Post(
-                      title: _textEditingController.text,
-                      description: '',
-                      created: DateTime.now(),
-                      imagePath: imagePath,
-                    );
+                    if (widget.post == null) {
+                      final post = Post(
+                        title: _textEditingController.text,
+                        description: '',
+                        created: DateTime.now(),
+                        imagePath: imagePath,
+                      );
 
-                    postService.post(post);
+                      postService.post(post);
+                    } else {
+                      final post = widget.post!;
+                      post.title = _textEditingController.text;
+                      post.imagePath = imagePath ?? (_deleteOldImage ? null : post.imagePath);
 
-                    const snackBar = SnackBar(
-                      backgroundColor: Colors.grey,
-                      content: Text(
-                        'บันทึกเรียบร้อย',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      duration: Duration(seconds: 2),
-                    );
+                      postService.updatePost(post);
+                    }
+
 
                     if (!mounted){
                       return;
                     }
 
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    SnackBarService.showSnackBar('บันทึกเรียบร้อย', context);
+
                     feedScrollController.animateTo(0,
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.fastOutSlowIn);
@@ -130,7 +139,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
     return Stack(
       children: [
         Image.file(
-          File(xFile!.path),
+          File(widget.post?.imagePath ?? xFile!.path),
           fit: BoxFit.fitWidth,
         ),
         Positioned(
@@ -140,6 +149,10 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
             icon: const Icon(Icons.cancel, color: Colors.white),
             onPressed: () {
               setState(() {
+                if (widget.post?.imagePath != null){
+                  _deleteOldImage = true;
+                }
+
                 xFile = null;
 
                 if (_textEditingController.text.isEmpty){
@@ -185,7 +198,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                 }
               },
             ),
-            if (xFile != null) _buildImage(),
+            if (xFile != null || (widget.post?.imagePath != null && !_deleteOldImage)) _buildImage(),
             _buildRowAction(
                 const Icon(
                   Icons.image,
@@ -232,14 +245,14 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
           color: Colors.white54,
         ),
         Expanded(child: _buildBodySection()),
-        SizedBox(
-          height: 300,
-          child: RiveAnimation.asset(
-            'assets/3984-8296-car.riv',
-            controllers: [_controller],
-            fit: BoxFit.cover,
-          ),
-        )
+        // SizedBox(
+        //   height: 300,
+        //   child: RiveAnimation.asset(
+        //     'assets/3984-8296-car.riv',
+        //     controllers: [_controller],
+        //     fit: BoxFit.cover,
+        //   ),
+        // )
       ],
     );
   }

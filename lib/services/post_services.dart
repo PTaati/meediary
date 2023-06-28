@@ -13,4 +13,15 @@ class PostService with ChangeNotifier{
     posts.insert(0, post);
     notifyListeners();
   }
+
+  void updatePost(Post post) {
+    postBox.put(post);
+    notifyListeners();
+  }
+
+  void deletePost(Post post) {
+    postBox.remove(post.id);
+    posts = postBox.getAll().reversed.toList();
+    notifyListeners();
+  }
 }

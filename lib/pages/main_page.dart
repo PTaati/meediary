@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _onTapNewPost(BuildContext context) async {
-    await Navigator.of(context).pushNamed(RouteNames.addNewPostPage);
+    await Navigator.of(context).pushNamed(RouteNames.createOrEditPostPage);
 
     if (mounted && _currentTab == BottomNavigationTab.newPost) {
       setState(() {
