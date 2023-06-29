@@ -7,6 +7,7 @@ import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/services/chat_service.dart';
 import 'package:meediary/services/notification_service.dart';
+import 'package:meediary/services/snackbar_service.dart';
 import 'package:meediary/utils/date_time_utils.dart';
 import 'package:meediary/widgets/message_card.dart';
 import 'package:provider/provider.dart';
@@ -211,9 +212,17 @@ class _ChatPageState extends State<ChatPage> {
                   '$displaySendTime',
                   style: const TextStyle(color: Colors.grey),
                 )
-              : const Text(
-                  'เลือกเวลาเพื่อส่งหาคุณในอนาคต',
-                  style: TextStyle(color: Colors.grey),
+              : Row(
+                  children: const [
+                    Icon(
+                      Icons.more_time,
+                      color: Colors.grey,
+                    ),
+                    Text(
+                      'เลือกเวลาเพื่อส่งหาคุณในอนาคต',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
                 ),
         ),
         selectSendTime != null
@@ -235,12 +244,40 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: Text('คุณและคุณเท่านั้น'),
+      backgroundColor: Colors.black,
+      actions: [
+        IconButton(
+          onPressed: () {
+            SnackBarService.showSnackBar('อดใจรออีกนิดน้า', context);
+          },
+          icon: const Icon(
+            Icons.call,
+            color: Colors.white,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            SnackBarService.showSnackBar('อดใจรออีกนิดน้า', context);
+          },
+          icon: const Icon(
+            Icons.videocam_rounded,
+            color: Colors.white,
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatService = Provider.of<ChatService>(context);
 
     return SafeArea(
       child: Scaffold(
+        appBar: _buildAppBar(),
         body: Column(
           children: [
             Expanded(child: _buildChatHistory(chatService.messages)),
