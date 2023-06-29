@@ -19,8 +19,12 @@ class MessageCard extends StatefulWidget {
 class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
-    final createdTimeFormat = displayDateTimeFormat(
+    final sendTimeFormat = displayDateTimeFormat(
       widget.message.timeToSend,
+    );
+
+    final createTimeFormat = displayDateTimeFormat(
+      widget.message.created,
     );
 
     return Column(
@@ -33,7 +37,7 @@ class _MessageCardState extends State<MessageCard> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              '($createdTimeFormat) คุณในอดีตบอกว่า',
+              '($createTimeFormat) คุณในอดีตบอกว่า',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12.0,
@@ -94,11 +98,10 @@ class _MessageCardState extends State<MessageCard> {
             ),
           ),
         ),
-        if (!widget.message.isSchedule)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              createdTimeFormat,
+              sendTimeFormat,
               style: const TextStyle(
                 color: Colors.blueGrey,
                 fontSize: 10.0,

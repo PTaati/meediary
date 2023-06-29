@@ -107,6 +107,7 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
   Widget _buildRowAction(Icon icon, String label, Future Function() onTap) {
     return GestureDetector(
       excludeFromSemantics: true,
+      behavior: HitTestBehavior.translucent,
       onTap: onTap,
       child: Column(
         children: [
