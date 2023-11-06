@@ -178,6 +178,7 @@ class _PostCardState extends State<PostCard> {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Stack(
+        alignment: Alignment.center,
         children: [
           GestureDetector(
             onDoubleTap: () async {
@@ -193,6 +194,7 @@ class _PostCardState extends State<PostCard> {
                 context: context,
                 builder: (context) {
                   return InteractiveViewer(
+                    maxScale: 120,
                     child: Image.file(
                       File(widget.post.imagePath!),
                       fit: BoxFit.contain,
@@ -203,7 +205,6 @@ class _PostCardState extends State<PostCard> {
             },
             child: SizedBox(
               width: width,
-              height: width,
               child: Image.file(
                 File(widget.post.imagePath!),
                 fit: BoxFit.cover,
@@ -211,18 +212,15 @@ class _PostCardState extends State<PostCard> {
             ),
           ),
           if (_isLikeAnimate && widget.post.isLike)
-            SizedBox(
-              width: width,
-              height: width,
-              child: Center(
-                child: SizedBox(
-                  height: width / 3,
-                  width: width / 3,
-                  child: RiveAnimation.asset(
-                    'assets/1683-3324-like-button.riv',
-                    controllers: [_controller],
-                    fit: BoxFit.cover,
-                  ),
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: RiveAnimation.asset(
+                  'assets/1683-3324-like-button.riv',
+                  controllers: [_controller],
+                  //fit: BoxFit.cover,
                 ),
               ),
             )
@@ -288,8 +286,7 @@ class _PostCardState extends State<PostCard> {
         size: 24,
       ),
       onPressed: () async {
-        final postService =
-        Provider.of<PostService>(context, listen: false);
+        final postService = Provider.of<PostService>(context, listen: false);
         postService.deletePost(widget.post);
       },
     );
