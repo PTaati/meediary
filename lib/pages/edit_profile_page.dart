@@ -35,19 +35,85 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget _buildEditProfile() {
-    return GestureDetector(
-      onTap: () async {
-        final XFile? image = await picker.pickImage(source: ImageSource.camera);
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          xFile = image;
-        });
-      },
-      child: Stack(
-        children: [
-          CircleAvatar(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        GestureDetector(
+          onLongPress: () async {
+            showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return SizedBox(
+                    height: 150,
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () async {
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.camera);
+                            if (!mounted) {
+                              return;
+                            }
+                            Navigator.of(context).pop();
+                            setState(() {
+                              xFile = image;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: SizedBox(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.grey,
+                                  ),
+                                  Text('ถ่ายภาพ'),
+                                  SizedBox.shrink(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Divider(),
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () async {
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (!mounted) {
+                              return;
+                            }
+                            Navigator.of(context).pop();
+                            setState(() {
+                              xFile = image;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Icon(
+                                  Icons.photo_camera_back,
+                                  color: Colors.grey,
+                                ),
+                                Text('แกลลอรี่'),
+                                SizedBox.shrink(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+          },
+          child: CircleAvatar(
             radius: 50,
             backgroundColor: Colors.grey,
             foregroundImage: xFile != null
@@ -60,16 +126,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               size: 100,
             ),
           ),
-          const Positioned(
-            bottom: 0,
-            right: 0,
-            child: Icon(
-              Icons.change_circle,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
