@@ -122,8 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         IconButton(
             onPressed: () {
-              SnackBarService.showSnackBar('อดใจรออีกนิดน้า', context);
-              // Navigator.of(context).pushNamed(RouteNames.settingPage);
+              Navigator.of(context).pushNamed(RouteNames.settingPage);
             },
             icon: const Icon(
               Icons.settings,
