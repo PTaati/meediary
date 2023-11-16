@@ -3,10 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:meediary/constants/routes.dart';
-import 'package:meediary/data_models/post.dart';
 import 'package:meediary/data_models/user.dart';
-import 'package:meediary/services/post_services.dart';
-import 'package:meediary/services/snackbar_service.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -83,38 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildImageTile(Post post) {
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-          barrierColor: Colors.black,
-          context: context,
-          builder: (context) {
-            return InteractiveViewer(
-              child: Image.file(
-                File(post.imagePath!),
-                fit: BoxFit.contain,
-              ),
-            );
-          },
-        );
-      },
-      child: Image.file(
-        File(post.imagePath!),
-        fit: BoxFit.cover,
-      ),
-    );
-  }
 
-  Widget _buildImageGrid(List<Post> posts) {
-    return GridView.count(
-      primary: false,
-      crossAxisSpacing: 2,
-      mainAxisSpacing: 2,
-      crossAxisCount: 3,
-      children: posts.map((post) => _buildImageTile(post)).toList(),
-    );
-  }
 
   Widget _buildSettings() {
     return Row(
@@ -134,7 +100,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final postService = Provider.of<PostService>(context);
     // final imagePosts =
     //     postService.posts.where((post) => post.imagePath != null).toList();
 

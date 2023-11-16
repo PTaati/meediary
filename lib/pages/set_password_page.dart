@@ -33,7 +33,7 @@ class _SetPasswordPageState extends State<SetPasswordPage> {
           StateMachineController.fromArtboard(art, "Login Machine")!;
 
       art.addController(stateMachineController);
-      for (var element in stateMachineController!.inputs) {
+      for (var element in stateMachineController.inputs) {
         if (element.name == 'isChecking') {
           isChecking = element as SMIBool;
         }

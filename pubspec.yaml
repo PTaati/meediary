@@ -49,6 +49,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   rive: ^0.11.2
+  restart_app: ^1.1.2
 
 
 dev_dependencies:

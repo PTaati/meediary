@@ -11,7 +11,6 @@ import 'package:meediary/services/snackbar_service.dart';
 import 'package:meediary/utils/date_time_utils.dart';
 import 'package:meediary/widgets/message_card.dart';
 import 'package:provider/provider.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -246,7 +245,7 @@ class _ChatPageState extends State<ChatPage> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: Text('คุณและคุณเท่านั้น'),
+      title: const Text('คุณและคุณเท่านั้น'),
       backgroundColor: Colors.black,
       actions: [
         IconButton(

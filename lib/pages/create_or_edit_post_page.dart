@@ -8,7 +8,6 @@ import 'package:meediary/services/post_services.dart';
 import 'package:meediary/services/snackbar_service.dart';
 import 'package:meediary/utils/file_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:rive/rive.dart';
 
 class CreateOrEditPostPage extends StatefulWidget {
   const CreateOrEditPostPage({this.post, Key? key}) : super(key: key);
@@ -24,13 +23,11 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
   final TextEditingController _textEditingController = TextEditingController();
   final ImagePicker picker = ImagePicker();
   XFile? xFile;
-  late RiveAnimationController _controller;
   bool _deleteOldImage = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = SimpleAnimation('idle');
 
     if (widget.post != null){
       _textEditingController.text = widget.post?.title ?? '';
