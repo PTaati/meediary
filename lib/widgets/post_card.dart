@@ -7,6 +7,7 @@ import 'package:meediary/services/snackbar_service.dart';
 import 'package:meediary/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:social_share/social_share.dart';
 
 import '../services/post_services.dart';
 
@@ -134,23 +135,26 @@ class _PostCardState extends State<PostCard> {
   Widget _buildShare() {
     return GestureDetector(
       excludeFromSemantics: true,
-      onTap: () {
-        SnackBarService.showSnackBar('อดใจรออีกนิดน้า', context);
+      onTap: () async {
+        await SocialShare.shareInstagramStory(
+          appId: '210107731912802',
+          imagePath: widget.post.imagePath!,
+        );
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: const [
           Icon(
             Icons.share,
-            color: Colors.white30,
+            color: Colors.white,
           ),
           SizedBox(
             width: 10,
           ),
           Text(
-            'แชร์',
+            'Instagram',
             style: TextStyle(
-              color: Colors.white30,
+              color: Colors.white,
             ),
           ),
         ],
@@ -167,7 +171,7 @@ class _PostCardState extends State<PostCard> {
           _buildLike(),
           // _buildComment(),
           _buildCreatedTime(),
-          _buildShare(),
+          if (widget.post.imagePath != null) _buildShare(),
         ],
       ),
     );

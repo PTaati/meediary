@@ -202,7 +202,7 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
                   Icons.image,
                   color: Colors.green,
                 ),
-                'รูปภาพ/วิดีโอ', () async {
+                'รูปภาพ', () async {
               final XFile? image =
                   await picker.pickImage(source: ImageSource.gallery);
               if (!mounted || image == null) {

@@ -49,5 +49,17 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>LSApplicationQueriesSchemes</key>
+        <array>
+        <string>instagram-stories</string>
+        <string>facebook-stories</string>
+        <string>facebook</string>
+        <string>instagram</string>
+        <string>twitter</string>
+        <string>whatsapp</string>
+        <string>tg</string>
+        </array>
+        <key>FacebookAppID</key>
+        <string>210107731912802</string>
 	</dict>
 </plist>
