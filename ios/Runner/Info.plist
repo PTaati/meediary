@@ -61,5 +61,9 @@
         </array>
         <key>FacebookAppID</key>
         <string>210107731912802</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>This app requires access to the photo library.</string>
+        <key>NSCameraUsageDescription</key>
+        <string>This app requires access to the camera.</string>
 	</dict>
 </plist>

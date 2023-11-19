@@ -197,12 +197,31 @@ class _PostCardState extends State<PostCard> {
                 barrierColor: Colors.black,
                 context: context,
                 builder: (context) {
-                  return InteractiveViewer(
-                    maxScale: 120,
-                    child: Image.file(
-                      File(widget.post.imagePath!),
-                      fit: BoxFit.contain,
-                    ),
+                  return Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: InteractiveViewer(
+                          maxScale: 120,
+                          child: Image.file(
+                            File(widget.post.imagePath!),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.fullscreen_exit,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )
+                    ],
                   );
                 },
               );
