@@ -81,8 +81,10 @@ class _ChatPageState extends State<ChatPage> {
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.end,
                     children: [
-                      MessageCard(
-                        message: message,
+                      Expanded(
+                        child: MessageCard(
+                          message: message,
+                        ),
                       ),
                     ],
                   ))
@@ -99,6 +101,8 @@ class _ChatPageState extends State<ChatPage> {
           child: TextFormField(
             controller: _textEditingController,
             cursorColor: Colors.white54,
+            minLines: 1,
+            maxLines: 4,
             decoration: const InputDecoration(
               border: InputBorder.none,
               focusedBorder: InputBorder.none,
