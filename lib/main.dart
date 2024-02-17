@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/data_models/user.dart';
@@ -11,12 +12,21 @@ import 'package:meediary/services/notification_service.dart';
 import 'package:meediary/services/object_box.dart';
 import 'package:meediary/services/post_services.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   // This is required so ObjectBox can get the application directory
   // to store the database in.
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  await dotenv.load(fileName: ".env");
+
+  final googleApiKey = dotenv.env['GOOGLE_AI_API_KEY']!;
+  final googleAiModel = GenerativeModel(
+    model: 'gemini-pro',
+    apiKey: googleApiKey,
+  );
 
   final notificationService = NotificationService();
 
@@ -33,7 +43,7 @@ Future<void> main() async {
 
   late User user;
   final users = userBox.getAll();
-  if (users.isEmpty){
+  if (users.isEmpty) {
     user = User();
     userBox.put(user);
   } else {
@@ -44,7 +54,7 @@ Future<void> main() async {
 
   final chatMessageList = chatMessageBox.getAll();
 
-  chatMessageList.sort((a,b) {
+  chatMessageList.sort((a, b) {
     return a.timeToSend.compareTo(b.timeToSend);
   });
 
@@ -59,6 +69,7 @@ Future<void> main() async {
         ChangeNotifierProvider<ChatService>(create: (_) => chatService),
         ChangeNotifierProvider<User>(create: (_) => user),
         Provider<NotificationService>(create: (_) => notificationService),
+        Provider<GenerativeModel>(create: (_) => googleAiModel),
       ],
       child: const MeediaryApp(),
     ),

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/chat_message.dart';
@@ -190,33 +189,45 @@ class _ChatPageState extends State<ChatPage> {
           width: 40,
         ),
         TextButton(
-          onPressed: () {
-            DatePicker.showDateTimePicker(context,
-                showTitleActions: true,
-                locale: LocaleType.th,
-                minTime: DateTime.now(),
-                maxTime: DateTime(2222, 12, 31),
-                onChanged: (date) {}, onConfirm: (date) {
-              setState(() {
-                selectSendTime = date;
-              });
-            },
-                currentTime: DateTime.now(),
-                theme: const DatePickerTheme(
-                  backgroundColor: Colors.black,
-                  cancelStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                  doneStyle: TextStyle(color: Colors.white, fontSize: 16),
-                  itemStyle: TextStyle(color: Colors.white, fontSize: 18),
-                  containerHeight: 300,
-                ));
+          onPressed: () async {
+            final selectedSendDate = await showDatePicker(
+              context: context,
+              firstDate: DateTime.now(),
+              lastDate: DateTime(2222, 12, 31),
+              initialEntryMode: DatePickerEntryMode.calendarOnly,
+            );
+
+            if (!mounted) {
+              return;
+            }
+
+            final selectedTime = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+              initialEntryMode: TimePickerEntryMode.dialOnly,
+            );
+
+            if (!mounted || selectedTime == null || selectedSendDate == null) {
+              return;
+            }
+
+            setState(() {
+              selectSendTime = DateTime(
+                selectedSendDate.year,
+                selectedSendDate.month,
+                selectedSendDate.day,
+                selectedTime.hour,
+                selectedTime.minute,
+              );
+            });
           },
           child: selectSendTime != null
               ? Text(
                   '$displaySendTime',
                   style: const TextStyle(color: Colors.grey),
                 )
-              : Row(
-                  children: const [
+              : const Row(
+                  children: [
                     Icon(
                       Icons.more_time,
                       color: Colors.grey,

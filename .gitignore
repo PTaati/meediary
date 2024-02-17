@@ -25,3 +25,4 @@ doc/api/
 /.flutter-plugins-dependencies
 /lib/objectbox.g.dart
 /lib/objectbox-model.json
+.env
