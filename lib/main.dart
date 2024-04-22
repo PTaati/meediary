@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:meediary/data_models/chat_message.dart';
@@ -24,6 +25,8 @@ Future<void> main() async {
   final notificationService = NotificationService();
 
   await notificationService.setUpNotification();
+
+  final cameras = await availableCameras();
 
   late ObjectBox objectbox;
   late PostService postService;
@@ -62,6 +65,7 @@ Future<void> main() async {
         ChangeNotifierProvider<ChatService>(create: (_) => chatService),
         ChangeNotifierProvider<User>(create: (_) => user),
         Provider<NotificationService>(create: (_) => notificationService),
+        Provider<List<CameraDescription>>(create: (_) => cameras),
       ],
       child: const MeediaryApp(),
     ),

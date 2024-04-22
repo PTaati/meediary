@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meediary/constants/globals.dart';
+import 'package:meediary/constants/routes.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/services/post_services.dart';
 import 'package:meediary/services/snackbar_service.dart';
@@ -220,16 +221,17 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
                   color: Colors.redAccent,
                 ),
                 'ถ่ายรูป', () async {
-              final XFile? image =
-                  await picker.pickImage(source: ImageSource.camera);
-              if (!mounted || image == null) {
-                return;
-              }
-              setState(() {
-                xFile = image;
-                _canSave = true;
-                _deleteOldImage = true;
-              });
+              Navigator.of(context).pushNamed(RouteNames.takePicturePage);
+              // final XFile? image =
+              //     await picker.pickImage(source: ImageSource.camera);
+              // if (!mounted || image == null) {
+              //   return;
+              // }
+              // setState(() {
+              //   xFile = image;
+              //   _canSave = true;
+              //   _deleteOldImage = true;
+              // });
             }),
           ],
         ),
