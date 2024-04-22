@@ -25,6 +25,7 @@ class _MeediaryAppState extends State<MeediaryApp> {
         Locale('en'),
         Locale('th'),
       ],
+      showSemanticsDebugger: false,
       theme: AppTheme.applicationTheme(),
       routes: Routes.routes,
       home: const MainPage(),
