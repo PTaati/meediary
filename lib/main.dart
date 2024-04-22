@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/data_models/post.dart';
 import 'package:meediary/data_models/user.dart';
@@ -21,12 +20,6 @@ Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await dotenv.load(fileName: ".env");
-
-  final googleApiKey = dotenv.env['GOOGLE_AI_API_KEY']!;
-  final googleAiModel = GenerativeModel(
-    model: 'gemini-pro',
-    apiKey: googleApiKey,
-  );
 
   final notificationService = NotificationService();
 
@@ -69,7 +62,6 @@ Future<void> main() async {
         ChangeNotifierProvider<ChatService>(create: (_) => chatService),
         ChangeNotifierProvider<User>(create: (_) => user),
         Provider<NotificationService>(create: (_) => notificationService),
-        Provider<GenerativeModel>(create: (_) => googleAiModel),
       ],
       child: const MeediaryApp(),
     ),

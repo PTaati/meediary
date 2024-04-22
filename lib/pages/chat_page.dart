@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:meediary/constants/globals.dart';
 import 'package:meediary/data_models/chat_message.dart';
 import 'package:meediary/services/chat_service.dart';
@@ -166,16 +165,6 @@ class _ChatPageState extends State<ChatPage> {
               duration: const Duration(milliseconds: 500),
               curve: Curves.fastOutSlowIn,
             );
-
-            final prompt = 'ตอบข้อความนี้ ${messageObject.message}';
-            final content = [Content.text(prompt)];
-            final googleAiModel = Provider.of<GenerativeModel>(
-              context,
-              listen: false,
-            );
-            final response = await googleAiModel.generateContent(content);
-
-            print(response.text);
           },
           icon: Icon(
             _textEditingController.text.isNotEmpty
