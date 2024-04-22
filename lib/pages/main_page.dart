@@ -86,7 +86,9 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         onTap: (tab) async {
-          if (tab == BottomNavigationTab.home && _currentTab == tab) {
+          if (tab == BottomNavigationTab.home &&
+              _currentTab == tab &&
+              feedScrollController.hasClients) {
             feedScrollController.animateTo(0,
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.fastOutSlowIn);
