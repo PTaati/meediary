@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class TakePicturePage extends StatefulWidget {
@@ -16,6 +18,10 @@ class _TakePicturePageState extends State<TakePicturePage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late List<CameraDescription> _cameras;
+  final ValueNotifier<double> _zoomLevel = ValueNotifier(1);
+  late double _maxZoomLevel;
+  late double _minZoomLevel;
+  late Future _initZoomDetailFuture;
 
   @override
   void initState() {
@@ -30,13 +36,67 @@ class _TakePicturePageState extends State<TakePicturePage> {
       ResolutionPreset.max,
     );
 
+    _zoomLevel.addListener(() async {
+      await _initZoomDetailFuture;
+      final zoomLevel = _zoomLevel.value;
+      _controller.setZoomLevel(zoomLevel);
+    });
+
     _initializeControllerFuture = _controller.initialize();
+    _initZoomDetailFuture = _initZoomDetail();
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _initZoomDetail() async {
+    await _initializeControllerFuture;
+    _maxZoomLevel = await _controller.getMaxZoomLevel();
+    _minZoomLevel = await _controller.getMinZoomLevel();
+  }
+
+  Widget _buildZoomSlider() {
+    return FutureBuilder(
+      future: _initZoomDetailFuture,
+      builder: (buildZoomSliderFutureContext, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Align(
+            alignment: Alignment.bottomRight,
+            child: ValueListenableBuilder<double>(
+              valueListenable: _zoomLevel,
+              builder: (context, zoomLevel, child) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('${zoomLevel.round()}x'),
+                    SizedBox(
+                      height: 20,
+                      child: Slider(
+                        min: _minZoomLevel,
+                        max: _maxZoomLevel,
+                        activeColor: Colors.white12,
+                        value: zoomLevel,
+                        onChanged: (double value) {
+                          _zoomLevel.value = value;
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 90,
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
   }
 
   @override
@@ -46,15 +106,19 @@ class _TakePicturePageState extends State<TakePicturePage> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Center(child: CameraPreview(_controller));
+            return Stack(
+              children: [
+                Center(child: CameraPreview(_controller)),
+                _buildZoomSlider(),
+              ],
+            );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.grey.shade900,
+      floatingActionButton: IconButton(
         onPressed: () async {
           try {
             await _initializeControllerFuture;
@@ -75,9 +139,10 @@ class _TakePicturePageState extends State<TakePicturePage> {
             }
           }
         },
-        child: const Icon(
-          Icons.camera_alt,
+        icon: const Icon(
+          Icons.camera,
           color: Colors.white,
+          size: 44,
         ),
       ),
     );
@@ -93,7 +158,8 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: InteractiveViewer(child: Image.file(File(imagePath)))),
+      body:
+          Center(child: InteractiveViewer(child: Image.file(File(imagePath)))),
     );
   }
 }
