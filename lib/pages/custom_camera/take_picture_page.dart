@@ -9,10 +9,10 @@ class TakePicturePage extends StatefulWidget {
   const TakePicturePage({super.key});
 
   @override
-  TakePicturePageState createState() => TakePicturePageState();
+  State<TakePicturePage> createState() => _TakePicturePageState();
 }
 
-class TakePicturePageState extends State<TakePicturePage> {
+class _TakePicturePageState extends State<TakePicturePage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late List<CameraDescription> _cameras;
@@ -22,22 +22,19 @@ class TakePicturePageState extends State<TakePicturePage> {
     super.initState();
 
     _cameras = Provider.of<List<CameraDescription>>(context, listen: false);
-    // To display the current output from the Camera,
-    // create a CameraController.
+    print('_cameras ${_cameras.length}');
+    print('_cameras list ${_cameras.map((e) => e.toString())}');
+
     _controller = CameraController(
-      // Get a specific camera from the list of available cameras.
       _cameras.first,
-      // Define the resolution to use.
-      ResolutionPreset.medium,
+      ResolutionPreset.max,
     );
 
-    // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
   }
 
   @override
   void dispose() {
-    // Dispose of the controller when the widget is disposed.
     _controller.dispose();
     super.dispose();
   }
@@ -45,61 +42,49 @@ class TakePicturePageState extends State<TakePicturePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
-      // You must wait until the controller is initialized before displaying the
-      // camera preview. Use a FutureBuilder to display a loading spinner until the
-      // controller has finished initializing.
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
+            return Center(child: CameraPreview(_controller));
           } else {
-            // Otherwise, display a loading indicator.
             return const Center(child: CircularProgressIndicator());
           }
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        // Provide an onPressed callback.
+        backgroundColor: Colors.grey.shade900,
         onPressed: () async {
-          // Take the Picture in a try / catch block. If anything goes wrong,
-          // catch the error.
           try {
-            // Ensure that the camera is initialized.
             await _initializeControllerFuture;
-
-            // Attempt to take a picture and get the file `image`
-            // where it was saved.
             final image = await _controller.takePicture();
 
             if (!context.mounted) return;
 
-            // If the picture was taken, display it on a new screen.
             await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => DisplayPictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
                   imagePath: image.path,
                 ),
               ),
             );
           } catch (e) {
-            // If an error occurs, log the error to the console.
             if (kDebugMode) {
               print(e);
             }
           }
         },
-        child: const Icon(Icons.camera_alt),
+        child: const Icon(
+          Icons.camera_alt,
+          color: Colors.white,
+        ),
       ),
     );
   }
 }
 
-// A widget that displays the picture taken by the user.
+/// A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
 
@@ -108,10 +93,7 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
+      body: Center(child: InteractiveViewer(child: Image.file(File(imagePath)))),
     );
   }
 }
