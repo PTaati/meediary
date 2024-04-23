@@ -34,6 +34,7 @@ class _TakePicturePageState extends State<TakePicturePage> {
     _controller = CameraController(
       _cameras.first,
       ResolutionPreset.max,
+      enableAudio: false,
     );
 
     _zoomLevel.addListener(() async {
@@ -99,6 +100,17 @@ class _TakePicturePageState extends State<TakePicturePage> {
     );
   }
 
+  Widget _buildCameraView() {
+    return Center(
+      child: CameraPreview(
+        _controller,
+        child: const Icon(
+          Icons.filter_center_focus,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +120,7 @@ class _TakePicturePageState extends State<TakePicturePage> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Stack(
               children: [
-                Center(child: CameraPreview(_controller)),
+                _buildCameraView(),
                 _buildZoomSlider(),
               ],
             );
