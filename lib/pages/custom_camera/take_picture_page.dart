@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,8 @@ class _TakePicturePageState extends State<TakePicturePage> {
   late double _maxZoomLevel;
   late double _minZoomLevel;
   late Future _initZoomDetailFuture;
+  final _buttonCarouselController = CarouselController();
+  final ValueNotifier<int> _filterIndex = ValueNotifier(0);
 
   @override
   void initState() {
@@ -108,13 +111,129 @@ class _TakePicturePageState extends State<TakePicturePage> {
     );
   }
 
+  Widget _getFilterWithIndex(int index) {
+    final icons = [
+      Icons.filter_center_focus,
+      Icons.person,
+      Icons.arrow_upward,
+    ];
+    return Icon(
+      icons[index],
+      color: Colors.white30,
+      size: 100,
+    );
+  }
+
   Widget _buildCameraView() {
     return Center(
       child: CameraPreview(
         _controller,
-        child: const Icon(
-          Icons.filter_center_focus,
-          color: Colors.black12,
+        child:  ValueListenableBuilder<int>(
+          valueListenable: _filterIndex,
+          builder: (context, index, child) {
+            return _getFilterWithIndex(index);
+          }
+        ),
+      ),
+    );
+  }
+
+  Future<void> _takePicture() async {
+    try {
+      await _initializeControllerFuture;
+      final image = await _controller.takePicture();
+
+      if (!mounted) {
+        return;
+      }
+
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => DisplayPictureScreen(
+            imagePath: image.path,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Widget _buildSelectionFilter() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: SizedBox(
+        height: 80,
+        width: double.infinity,
+        child: Stack(
+          children: [
+            SizedBox(
+              height: 80,
+              child: Center(
+                child: CarouselSlider(
+                  items: [
+                    GestureDetector(
+                      onTap: _takePicture,
+                      child: const Icon(
+                        Icons.camera,
+                        color: Colors.white,
+                        size: 44,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _takePicture,
+                      child: const Icon(
+                        Icons.person_sharp,
+                        color: Colors.white,
+                        size: 44,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _takePicture,
+                      child: const Icon(
+                        Icons.home_filled,
+                        color: Colors.white,
+                        size: 44,
+                      ),
+                    ),
+                  ],
+                  carouselController: _buttonCarouselController,
+                  options: CarouselOptions(
+                      autoPlay: false,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.25,
+                      aspectRatio: 10.0,
+                      initialPage: 1,
+                      // enableInfiniteScroll: false,
+                      onPageChanged: (index, reason) {
+                        _filterIndex.value = index;
+                      }),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: IgnorePointer(
+                ignoring: true,
+                child: Container(
+                  height: 65,
+                  width: 65,
+                  margin: const EdgeInsets.only(top: 5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 5,
+                      color: Colors.white60,
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(32.5),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -131,40 +250,13 @@ class _TakePicturePageState extends State<TakePicturePage> {
               children: [
                 _buildCameraView(),
                 _buildZoomSlider(),
+                _buildSelectionFilter(),
               ],
             );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
         },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: IconButton(
-        onPressed: () async {
-          try {
-            await _initializeControllerFuture;
-            final image = await _controller.takePicture();
-
-            if (!context.mounted) return;
-
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  imagePath: image.path,
-                ),
-              ),
-            );
-          } catch (e) {
-            if (kDebugMode) {
-              print(e);
-            }
-          }
-        },
-        icon: const Icon(
-          Icons.camera,
-          color: Colors.white,
-          size: 44,
-        ),
       ),
     );
   }
