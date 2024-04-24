@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class TakePicturePage extends StatefulWidget {
@@ -28,9 +26,6 @@ class _TakePicturePageState extends State<TakePicturePage> {
     super.initState();
 
     _cameras = Provider.of<List<CameraDescription>>(context, listen: false);
-    print('_cameras ${_cameras.length}');
-    print('_cameras list ${_cameras.map((e) => e.toString())}');
-
     _controller = CameraController(
       _cameras.first,
       ResolutionPreset.max,
@@ -60,43 +55,56 @@ class _TakePicturePageState extends State<TakePicturePage> {
   }
 
   Widget _buildZoomSlider() {
-    return FutureBuilder(
-      future: _initZoomDetailFuture,
-      builder: (buildZoomSliderFutureContext, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Align(
-            alignment: Alignment.bottomRight,
-            child: ValueListenableBuilder<double>(
-              valueListenable: _zoomLevel,
-              builder: (context, zoomLevel, child) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('${zoomLevel.round()}x'),
-                    SizedBox(
-                      height: 20,
-                      child: Slider(
-                        min: _minZoomLevel,
-                        max: _maxZoomLevel,
-                        activeColor: Colors.white12,
-                        value: zoomLevel,
-                        onChanged: (double value) {
-                          _zoomLevel.value = value;
-                        },
+    return SafeArea(
+      child: FutureBuilder(
+        future: _initZoomDetailFuture,
+        builder: (buildZoomSliderFutureContext, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Align(
+              alignment: Alignment.topRight,
+              child: ValueListenableBuilder<double>(
+                valueListenable: _zoomLevel,
+                builder: (context, zoomLevel, child) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 6,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 90,
-                    ),
-                  ],
-                );
-              },
-            ),
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
+                      SizedBox(
+                        width: 60,
+                        height: MediaQuery.of(context).size.height / 2,
+                        child: RotatedBox(
+                          quarterTurns: 3,
+                          child: Slider(
+                            min: _minZoomLevel,
+                            max: _maxZoomLevel,
+                            activeColor: Colors.white12,
+                            inactiveColor: Colors.black12,
+                            value: zoomLevel,
+                            onChanged: (double value) {
+                              _zoomLevel.value = value;
+                            },
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${zoomLevel.round()}x',
+                        style: const TextStyle(
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
     );
   }
 
@@ -106,6 +114,7 @@ class _TakePicturePageState extends State<TakePicturePage> {
         _controller,
         child: const Icon(
           Icons.filter_center_focus,
+          color: Colors.black12,
         ),
       ),
     );
