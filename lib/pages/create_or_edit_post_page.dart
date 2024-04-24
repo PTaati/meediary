@@ -30,9 +30,9 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
   void initState() {
     super.initState();
 
-    if (widget.post != null){
+    if (widget.post != null) {
       _textEditingController.text = widget.post?.title ?? '';
-      if (_textEditingController.text.isNotEmpty){
+      if (_textEditingController.text.isNotEmpty) {
         _canSave = true;
       }
     }
@@ -51,7 +51,7 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
             icon: const Icon(Icons.close),
           ),
           Text(
-            widget.post != null ? 'แก้ไขบันทึก' :'เพิ่มบันทึก',
+            widget.post != null ? 'แก้ไขบันทึก' : 'เพิ่มบันทึก',
             style: const TextStyle(fontSize: 24),
           ),
           IconButton(
@@ -77,13 +77,13 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
                     } else {
                       final post = widget.post!;
                       post.title = _textEditingController.text;
-                      post.imagePath = imagePath ?? (_deleteOldImage ? null : post.imagePath);
+                      post.imagePath = imagePath ??
+                          (_deleteOldImage ? null : post.imagePath);
 
                       postService.updatePost(post);
                     }
 
-
-                    if (!mounted){
+                    if (!mounted) {
                       return;
                     }
 
@@ -138,7 +138,8 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
     return Stack(
       children: [
         Image.file(
-          File((_deleteOldImage ? null :widget.post?.imagePath) ?? xFile!.path),
+          File(
+              (_deleteOldImage ? null : widget.post?.imagePath) ?? xFile!.path),
           fit: BoxFit.fitWidth,
         ),
         Positioned(
@@ -148,13 +149,13 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
             icon: const Icon(Icons.cancel, color: Colors.white),
             onPressed: () {
               setState(() {
-                if (widget.post?.imagePath != null){
+                if (widget.post?.imagePath != null) {
                   _deleteOldImage = true;
                 }
 
                 xFile = null;
 
-                if (_textEditingController.text.isEmpty){
+                if (_textEditingController.text.isEmpty) {
                   _canSave = false;
                 }
               });
@@ -164,8 +165,6 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
       ],
     );
   }
-
-
 
   Widget _buildBodySection() {
     return Padding(
@@ -197,7 +196,9 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
                 }
               },
             ),
-            if (xFile != null || (widget.post?.imagePath != null && !_deleteOldImage)) _buildImage(),
+            if (xFile != null ||
+                (widget.post?.imagePath != null && !_deleteOldImage))
+              _buildImage(),
             _buildRowAction(
                 const Icon(
                   Icons.image,
@@ -221,17 +222,17 @@ class _CreateOrEditPostPageState extends State<CreateOrEditPostPage> {
                   color: Colors.redAccent,
                 ),
                 'ถ่ายรูป', () async {
-              Navigator.of(context).pushNamed(RouteNames.takePicturePage);
-              // final XFile? image =
-              //     await picker.pickImage(source: ImageSource.camera);
-              // if (!mounted || image == null) {
-              //   return;
-              // }
-              // setState(() {
-              //   xFile = image;
-              //   _canSave = true;
-              //   _deleteOldImage = true;
-              // });
+              final image = await Navigator.of(context)
+                  .pushNamed(RouteNames.takePicturePage) as XFile?;
+
+              if (!mounted || image == null) {
+                return;
+              }
+              setState(() {
+                xFile = image;
+                _canSave = true;
+                _deleteOldImage = true;
+              });
             }),
           ],
         ),
