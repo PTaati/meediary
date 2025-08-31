@@ -52,10 +52,10 @@ class SettingPage extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _buildDivider(),
-              _buildRow('ตั้งรหัสผ่าน', () {
-                Navigator.of(context).pushNamed(RouteNames.setPasswordPage);
-              }),
+              // _buildDivider(),
+              // _buildRow('ตั้งรหัสผ่าน', () {
+              //   Navigator.of(context).pushNamed(RouteNames.setPasswordPage);
+              // }),
               _buildDivider(),
               _buildRow('ลบข้อมูลทั้งหมด', () async {
                 await showDialog(
